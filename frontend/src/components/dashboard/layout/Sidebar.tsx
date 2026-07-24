@@ -1,7 +1,6 @@
 import {
   LayoutDashboard,
   FolderKanban,
-  Settings,
   Coffee,
   LogOut,
 } from "lucide-react";
@@ -21,11 +20,7 @@ const navItems = [
     path: "/dashboard/projects",
     icon: FolderKanban,
   },
-  {
-    name: "Settings",
-    path: "/dashboard/settings",
-    icon: Settings,
-  },
+ 
 ];
 
 const Sidebar = () => {
@@ -36,13 +31,15 @@ const Sidebar = () => {
 
       <div>
 
-        <div className="flex items-center justify-center border-b-4 border-black px-6 py-8">
+        <div className="flex items-center gap-3 border-b-4 border-black px-6 py-6">
 
           <img
             src={logo}
             alt="LaunchLens"
-            className="h-20 w-auto object-contain"
+            className="h-16 w-auto object-contain"
           />
+
+    
 
         </div>
 

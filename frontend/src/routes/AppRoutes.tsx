@@ -8,7 +8,8 @@ import DashboardLayout from "../components/dashboard/layout/DashboardLayout";
 
 import Dashboard from "../pages/dashboard/Dashboard";
 import Projects from "../pages/dashboard/Projects";
-import Settings from "../pages/dashboard/Settings";
+import ProjectDetails from "../pages/dashboard/ProjectDetails";
+
 
 const AppRoutes = () => {
   return (
@@ -35,24 +36,39 @@ const AppRoutes = () => {
 
       {/* Dashboard */}
 
-      <Route element={<DashboardLayout />}>
+      
 
-        <Route
-          path="/dashboard"
-          element={<Dashboard />}
-        />
+        <Route element={<DashboardLayout />}>
 
-        <Route
-          path="/dashboard/projects"
-          element={<Projects />}
-        />
+    <Route
+        path="/dashboard"
+        element={<Dashboard />}
+    />
 
-        <Route
-          path="/dashboard/settings"
-          element={<Settings />}
-        />
+    <Route
+        path="/dashboard/projects"
+        element={<Projects />}
+    />
 
-      </Route>
+    <Route
+        path="/dashboard/projects/:projectId"
+        element={<ProjectDetails />}
+    />
+
+    <Route
+        path="/dashboard/projects/:projectId/campaigns"
+        element={<ProjectDetails />}
+    />
+
+    <Route
+        path="/dashboard/projects/:projectId/analytics"
+        element={<ProjectDetails />}
+    />
+
+</Route>
+
+      
+      
 
     </Routes>
   );
