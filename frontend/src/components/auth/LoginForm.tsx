@@ -55,7 +55,7 @@ const LoginForm = () => {
 
         <input
           type="email"
-          placeholder="john@gmail.com"
+          placeholder="karthik@gmail.com"
           {...register("email")}
           className="w-full rounded-2xl border-4 border-black p-4 font-semibold outline-none focus:bg-yellow-50"
         />

@@ -57,7 +57,7 @@ const SignupForm = () => {
 
         <input
           {...register("name")}
-          placeholder="John Doe"
+          placeholder="Karthik M R"
           className="w-full rounded-2xl border-4 border-black p-4 font-semibold outline-none focus:bg-yellow-50"
         />
 
@@ -82,7 +82,7 @@ const SignupForm = () => {
         <input
           {...register("email")}
           type="email"
-          placeholder="john@gmail.com"
+          placeholder="karthik@gmail.com"
           className="w-full rounded-2xl border-4 border-black p-4 font-semibold outline-none focus:bg-yellow-50"
         />
 
