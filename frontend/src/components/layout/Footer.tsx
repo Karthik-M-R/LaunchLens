@@ -36,11 +36,11 @@ const Footer = () => {
 
         <div className="flex gap-8 font-black">
 
-          <a href="#features">
+          {/* <a href="#features">
 
             Features
 
-          </a>
+          </a> */}
 
           <a href="#workflow">
 

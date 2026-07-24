@@ -1,9 +1,15 @@
-const Login = () => {
+import AuthLayout from "../components/auth/AuthLayout";
+import SignupForm from "../components/auth/SignupForm";
+
+const Signup = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center text-3xl font-bold">
-      Login Page
-    </div>
+    <AuthLayout
+      title="Create Account 🚀"
+      subtitle="Start tracking your marketing campaigns today."
+    >
+      <SignupForm />
+    </AuthLayout>
   );
 };
 
-export default Login;
+export default Signup;

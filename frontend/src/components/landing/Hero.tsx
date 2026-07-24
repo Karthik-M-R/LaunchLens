@@ -1,4 +1,6 @@
 import { ArrowRight, Play, Sparkles } from "lucide-react";
+import { Link } from "react-router-dom";
+
 
 const Hero = () => {
   return (
@@ -38,16 +40,19 @@ const Hero = () => {
           <div className="mt-10 flex flex-wrap gap-4">
 
             {/* Primary Action Button */}
-            <button className="flex items-center gap-2 rounded-2xl border-4 border-black bg-indigo-500 px-8 py-4 text-lg font-black text-white shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] transition-all hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-indigo-600 hover:shadow-[7px_7px_0px_0px_rgba(0,0,0,1)] active:translate-x-1 active:translate-y-1 active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]">
-              Get Started
-              <ArrowRight size={22} strokeWidth={3} />
-            </button>
+            <Link
+  to="/signup"
+  className="inline-flex items-center gap-2 rounded-2xl border-4 border-black bg-indigo-500 px-8 py-4 text-lg font-black text-white shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] transition-all hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-indigo-600 hover:shadow-[7px_7px_0px_0px_rgba(0,0,0,1)] active:translate-x-1 active:translate-y-1 active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]"
+>
+  Get Started
+  <ArrowRight size={22} strokeWidth={3} />
+</Link>
 
             {/* Secondary Action Button */}
-            <button className="flex items-center gap-2 rounded-2xl border-4 border-black bg-white px-8 py-4 text-lg font-black text-black shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] transition-all hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-purple-200 hover:shadow-[7px_7px_0px_0px_rgba(0,0,0,1)] active:translate-x-1 active:translate-y-1 active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]">
+            {/* <button className="flex items-center gap-2 rounded-2xl border-4 border-black bg-white px-8 py-4 text-lg font-black text-black shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] transition-all hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-purple-200 hover:shadow-[7px_7px_0px_0px_rgba(0,0,0,1)] active:translate-x-1 active:translate-y-1 active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]">
               <Play size={20} strokeWidth={3} fill="currentColor" />
               Live Demo
-            </button>
+            </button> */}
 
           </div>
 

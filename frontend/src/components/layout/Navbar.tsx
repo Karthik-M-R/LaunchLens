@@ -17,12 +17,12 @@ const Navbar = () => {
 
         {/* Navigation Links */}
         <div className="hidden items-center gap-8 md:flex font-black text-black">
-          <a
+          {/* <a
             href="#features"
             className="transition-all hover:text-indigo-600 hover:underline decoration-wavy underline-offset-4"
           >
             Features
-          </a>
+          </a> */}
 
           <a
             href="#about"

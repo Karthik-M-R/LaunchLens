@@ -1,8 +1,14 @@
+import AuthLayout from "../components/auth/AuthLayout";
+import LoginForm from "../components/auth/LoginForm";
+
 const Login = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center text-3xl font-bold">
-      Login Page
-    </div>
+    <AuthLayout
+      title="Welcome Back 👋"
+      subtitle="Login to continue tracking your campaigns."
+    >
+      <LoginForm />
+    </AuthLayout>
   );
 };
 
