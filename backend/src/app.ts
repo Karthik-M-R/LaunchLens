@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import { errorHandler } from "./middleware/error.middleware";
 
 import authRoutes from "./routes/auth.routes";
 
@@ -25,5 +26,5 @@ app.get("/", (_, res) => {
     message: "LaunchLens API Running 🚀",
   });
 });
-
+app.use(errorHandler);
 export default app;

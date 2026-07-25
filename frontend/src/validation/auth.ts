@@ -9,27 +9,20 @@ export const loginSchema = z.object({
 
 export type LoginFormData = z.infer<typeof loginSchema>;
 
-export const signupSchema = z
-  .object({
-    name: z
-      .string()
-      .min(3, "Name must be at least 3 characters"),
+export const signupSchema = z.object({
 
-    email: z.email("Please enter a valid email address"),
+  name: z
+    .string()
+    .min(3),
 
-    password: z
-      .string()
-      .min(6, "Password must be at least 6 characters"),
+  email: z
+    .email(),
 
-    confirmPassword: z.string(),
-  })
-  .refine(
-    (data) => data.password === data.confirmPassword,
-    {
-      path: ["confirmPassword"],
-      message: "Passwords do not match",
-    }
-  );
+  password: z
+    .string()
+    .min(8),
+
+});;
 
 export type SignupFormData = z.infer<typeof signupSchema>;
 

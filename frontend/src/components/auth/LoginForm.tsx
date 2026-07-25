@@ -1,6 +1,8 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
+import api from "../../api/axios";
+import { useAuth } from "../../context/AuthContext";
 
 import {
   loginSchema,
@@ -8,7 +10,7 @@ import {
 } from "../../validation/auth";
 
 const LoginForm = () => {
-
+  const { refreshUser } = useAuth();
   const navigate = useNavigate();
 
   const {
@@ -24,18 +26,57 @@ const LoginForm = () => {
   });
 
   const onSubmit = async (
-    data: LoginFormData
-  ) => {
+  data: LoginFormData
+) => {
+  try {
 
-    console.log(data);
+    /*
+      Send email & password to backend.
 
-    // Later
+      Backend:
 
-    // await login(data)
+      Validate
+
+      Compare Password
+
+      Generate JWT
+
+      Store Cookie
+    */
+
+    await api.post("/auth/login", data);
+
+    /*
+      Login API only creates cookie.
+
+      Now ask backend
+
+      "Who is logged in?"
+
+      GET /auth/me
+
+      Stores user inside AuthContext.
+    */
+
+    await refreshUser();
+
+    /*
+      User is authenticated.
+
+      Go to Dashboard.
+    */
 
     navigate("/dashboard");
 
-  };
+  } catch (error: any) {
+
+    alert(
+      error.response?.data?.message ??
+      "Login Failed"
+    );
+
+  }
+};
 
   return (
     <form
