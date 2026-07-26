@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, Link } from "react-router-dom";
 import {
   LayoutDashboard,
   FolderKanban,
@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 
 import { useAuth } from "../../context/AuthContext";
+import logo from "../../assets/logo/logo.png";
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -38,6 +39,8 @@ const Sidebar = () => {
   return (
     <aside
       className="
+        flex
+        flex-col
         w-full
         border-b
         border-gray-200
@@ -50,22 +53,16 @@ const Sidebar = () => {
       "
     >
       <div className="border-b border-gray-200 p-6">
-
-        <h1 className="text-2xl font-bold text-gray-900">
-
-          LaunchLens
-
-        </h1>
-
-        <p className="mt-1 text-sm text-gray-500">
-
-          Marketing Attribution
-
-        </p>
-
+        <Link to="/" className="flex items-center transition-transform hover:scale-105">
+          <img 
+            src={logo} 
+            alt="LaunchLens Logo" 
+            className="h-18 w-auto object-contain drop-shadow-[1px_1px_0px_rgba(0,0,0,1)]"
+          />
+        </Link>
       </div>
 
-      <nav className="space-y-2 p-4">
+      <nav className="flex-1 space-y-2 p-4">
 
         <NavLink
           to="/dashboard"
