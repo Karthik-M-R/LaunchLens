@@ -5,6 +5,7 @@ import { errorHandler } from "./middleware/error.middleware";
 import dashboardRoutes
 from "./routes/dashboard.routes";
 import authRoutes from "./routes/auth.routes";
+import projectRoutes from "./routes/project.routes";
 
 const app = express();
 
@@ -30,6 +31,10 @@ app.get("/", (_, res) => {
 app.use(
   "/api/dashboard",
   dashboardRoutes
+);
+app.use(
+  "/api/projects",
+  projectRoutes
 );
 app.use(errorHandler);
 export default app;
