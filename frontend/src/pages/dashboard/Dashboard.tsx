@@ -1,63 +1,59 @@
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import Sidebar from "../../components/dashboard/Sidebar";
+import Topbar from "../../components/dashboard/Topbar";
+import StatsGrid from "../../components/dashboard/StatsGrid";
+import RecentProjects from "../../components/dashboard/RecentProjects";
+import RecentActivity from "../../components/dashboard/RecentActivity";
 
 const Dashboard = () => {
-  const navigate = useNavigate();
-
-  const {
-    user,
-    logout,
-  } = useAuth();
-
-  const handleLogout = async () => {
-
-    await logout();
-
-    navigate("/login");
-
-  };
 
   return (
 
-    <div className="min-h-screen bg-gray-100 p-10">
+    <div className="min-h-screen bg-gray-50 md:flex">
 
-      <h1 className="text-4xl font-black">
+      <Sidebar />
 
-        Dashboard
+      <main className="flex-1">
 
-      </h1>
+        <Topbar
+          title="Dashboard"
+          subtitle="Overview of your marketing workspace."
+        />
 
-      <p className="mt-5">
+        <div className="space-y-8 p-8">
 
-        Welcome,
+          <StatsGrid
 
-        <span className="font-bold">
+            projects={0}
 
-          {" "}
+            campaigns={0}
 
-          {user?.name}
+            clicks={0}
 
-        </span>
+          />
 
-      </p>
+          <div
 
-      <p className="text-gray-600">
+            className="grid gap-8 lg:grid-cols-2"
 
-        {user?.email}
+          >
 
-      </p>
+            <RecentProjects
 
-      <button
+              projects={[]}
 
-        onClick={handleLogout}
+            />
 
-        className="mt-8 rounded-xl bg-red-500 px-6 py-3 font-bold text-white"
+            <RecentActivity
 
-      >
+              activities={[]}
 
-        Logout
+            />
 
-      </button>
+          </div>
+
+        </div>
+
+      </main>
 
     </div>
 
