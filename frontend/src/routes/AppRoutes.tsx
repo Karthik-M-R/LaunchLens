@@ -5,6 +5,7 @@ import Login from "../pages/Login";
 import Signup from "../pages/Signup";
 import ProtectedRoute from "./ProtectedRoute";
 import Dashboard from "../pages/dashboard/Dashboard";
+import Projects from "../pages/dashboard/Projects";
 
 const AppRoutes = () => {
   return (
@@ -15,6 +16,7 @@ const AppRoutes = () => {
       {/* Auth */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
+
       <Route
 
 path="/dashboard"
@@ -29,7 +31,19 @@ element={
 
 }
 
+
 />
+
+<Route
+  path="/projects"
+  element={
+    <ProtectedRoute>
+      <Projects />
+    </ProtectedRoute>
+  }
+/>
+
+
     </Routes>
   );
 };
