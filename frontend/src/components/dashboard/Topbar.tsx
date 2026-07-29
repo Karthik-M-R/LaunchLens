@@ -1,13 +1,16 @@
 import { useAuth } from "../../context/AuthContext";
+import type { ReactNode } from "react";
 
 interface TopbarProps {
   title: string;
   subtitle: string;
+  action?: ReactNode;
 }
 
 const Topbar = ({
   title,
   subtitle,
+  action,
 }: TopbarProps) => {
 
   const { user } = useAuth();
@@ -69,56 +72,67 @@ const Topbar = ({
         className="
           flex
           items-center
-          gap-4
+          gap-6
         "
       >
+        {action && (
+          <div className="flex items-center">
+            {action}
+          </div>
+        )}
 
-        <div
-          className="
-            text-right
-          "
-        >
+        {action && (
+          <div className="h-8 w-px bg-gray-200 hidden md:block" />
+        )}
 
-          <p
+        <div className="flex items-center gap-4">
+          <div
             className="
+              text-right
+            "
+          >
+
+            <p
+              className="
+                font-semibold
+                text-gray-900
+              "
+            >
+
+              {user?.name}
+
+            </p>
+
+            <p
+              className="
+                text-sm
+                text-gray-500
+              "
+            >
+
+              {user?.email}
+
+            </p>
+
+          </div>
+
+          <div
+            className="
+              flex
+              h-11
+              w-11
+              items-center
+              justify-center
+              rounded-full
+              bg-indigo-600
               font-semibold
-              text-gray-900
+              text-white
             "
           >
 
-            {user?.name}
+            {initials}
 
-          </p>
-
-          <p
-            className="
-              text-sm
-              text-gray-500
-            "
-          >
-
-            {user?.email}
-
-          </p>
-
-        </div>
-
-        <div
-          className="
-            flex
-            h-11
-            w-11
-            items-center
-            justify-center
-            rounded-full
-            bg-indigo-600
-            font-semibold
-            text-white
-          "
-        >
-
-          {initials}
-
+          </div>
         </div>
 
       </div>
