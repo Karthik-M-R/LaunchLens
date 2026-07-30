@@ -6,6 +6,7 @@ import dashboardRoutes
 from "./routes/dashboard.routes";
 import authRoutes from "./routes/auth.routes";
 import projectRoutes from "./routes/project.routes";
+import campaignRoutes from "./routes/campaign.routes";
 
 const app = express();
 
@@ -36,5 +37,6 @@ app.use(
   "/api/projects",
   projectRoutes
 );
+app.use("/api", campaignRoutes);
 app.use(errorHandler);
 export default app;
