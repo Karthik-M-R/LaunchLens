@@ -54,9 +54,16 @@ const CreateProjectModal = ({
 
     reset();
 
-    onClose();
+    
 
   };
+  const handleClose = () => {
+
+    reset();
+
+    onClose();
+
+};
 
   return (
 
@@ -157,14 +164,14 @@ const CreateProjectModal = ({
           >
 
             <Button
-              type="button"
-              variant="secondary"
-              onClick={onClose}
-            >
+    type="button"
+    variant="secondary"
+    onClick={handleClose}
+>
 
-              Cancel
+    Cancel
 
-            </Button>
+</Button>
 
             <Button
               type="submit"
