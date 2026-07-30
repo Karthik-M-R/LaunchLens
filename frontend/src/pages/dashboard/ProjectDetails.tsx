@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import api from "../../api/axios";
 
@@ -7,7 +7,14 @@ import Sidebar from "../../components/dashboard/Sidebar";
 import Topbar from "../../components/dashboard/Topbar";
 import Loader from "../../components/ui/Loader";
 import Button from "../../components/ui/Button";
+import CampaignList from "../../components/dashboard/CampaignList";
 
+import type { Campaign } from "../../types/campaign";
+import CampaignFormModal from "../../components/dashboard/CampaignFormModal";
+
+import type { CampaignFormData } from "../../validation/campaign";
+
+import DeleteCampaignDialog from "../../components/dashboard/DeleteCampaignDialog";
 interface Project {
   id: string;
   name: string;
@@ -26,22 +33,143 @@ const ProjectDetails = () => {
   const [project, setProject] =
     useState<Project | null>(null);
 
-  useEffect(() => {
-    const fetchProject = async () => {
-      try {
-        const response = await api.get(
-          `/projects/${id}`
-        );
+  const [campaigns, setCampaigns] =
+    useState<Campaign[]>([]);
 
-        setProject(response.data.data);
-      } catch (error) {
-        console.error(error);
+  const [campaignLoading, setCampaignLoading] =
+    useState(true);
+const [openModal, setOpenModal] =
+  useState(false);
+
+const [mode, setMode] =
+  useState<"create" | "edit">("create");
+
+const [selectedCampaign, setSelectedCampaign] =
+  useState<Campaign | null>(null);
+
+  const [openDeleteDialog, setOpenDeleteDialog] =
+  useState(false);
+
+const [deleting, setDeleting] =
+  useState(false);
+
+
+  const fetchProject = async () => {
+    try {
+      const response = await api.get(
+        `/projects/${id}`
+      );
+
+      setProject(response.data.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchCampaigns = async () => {
+    try {
+      const response = await api.get(
+        `/projects/${id}/campaigns`
+      );
+
+      setCampaigns(response.data.data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setCampaignLoading(false);
+    }
+  };
+const openCreateModal = () => {
+  setMode("create");
+  setSelectedCampaign(null);
+  setOpenModal(true);
+};
+
+const openEditModal = (
+  campaign: Campaign
+) => {
+  setMode("edit");
+  setSelectedCampaign(campaign);
+  setOpenModal(true);
+};
+
+const openDeleteCampaignDialog = (
+  campaign: Campaign
+) => {
+  setSelectedCampaign(campaign);
+  setOpenDeleteDialog(true);
+};
+const createCampaign = async (
+  data: CampaignFormData
+) => {
+  try {
+    await api.post(
+      `/projects/${id}/campaigns`,
+      data
+    );
+
+    setOpenModal(false);
+
+    fetchCampaigns();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const updateCampaign = async (
+  data: CampaignFormData
+) => {
+  if (!selectedCampaign) return;
+
+  try {
+    await api.patch(
+      `/campaigns/${selectedCampaign.id}`,
+      data
+    );
+
+    setOpenModal(false);
+
+    fetchCampaigns();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const deleteCampaign = async () => {
+  if (!selectedCampaign) return;
+
+  try {
+    setDeleting(true);
+
+    await api.delete(
+      `/campaigns/${selectedCampaign.id}`
+    );
+
+    setOpenDeleteDialog(false);
+
+    setSelectedCampaign(null);
+
+    fetchCampaigns();
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setDeleting(false);
+  }
+};
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        await Promise.all([
+          fetchProject(),
+          fetchCampaigns(),
+        ]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchProject();
+    loadData();
   }, [id]);
 
   if (loading) {
@@ -61,7 +189,6 @@ const ProjectDetails = () => {
       <Sidebar />
 
       <main className="flex-1">
-
         <Topbar
           title={project.name}
           subtitle="Project Overview"
@@ -79,9 +206,7 @@ const ProjectDetails = () => {
           <div className="rounded-2xl bg-white p-8 shadow">
 
             <h2 className="text-3xl font-bold">
-
               {project.name}
-
             </h2>
 
             <a
@@ -94,21 +219,15 @@ const ProjectDetails = () => {
             </a>
 
             <p className="mt-6 text-gray-600">
-
               {project.description ||
-
                 "No description provided."}
-
             </p>
 
             <p className="mt-6 text-sm text-gray-500">
-
               Created{" "}
-
               {new Date(
                 project.createdAt
               ).toLocaleDateString()}
-
             </p>
 
           </div>
@@ -118,40 +237,51 @@ const ProjectDetails = () => {
             <div className="flex items-center justify-between">
 
               <h2 className="text-2xl font-semibold">
-
                 Campaigns
-
               </h2>
 
-              <Button>
-
-                + New Campaign
-
-              </Button>
+<Button onClick={openCreateModal}>
+  + New Campaign
+</Button>
 
             </div>
 
-            <div className="mt-10 rounded-xl border-2 border-dashed border-gray-300 p-12 text-center">
+            <div className="mt-8">
 
-              <p className="text-gray-500">
-
-                No campaigns yet.
-
-              </p>
-
-              <p className="mt-2 text-sm text-gray-400">
-
-                Create your first campaign to start
-                tracking marketing performance.
-
-              </p>
+              {campaignLoading ? (
+                <Loader />
+              ) : (
+                <CampaignList
+                  campaigns={campaigns}
+                  onEdit={openEditModal}
+                  onDelete={openDeleteCampaignDialog}
+                />
+              )}
 
             </div>
 
           </div>
 
         </div>
+<CampaignFormModal
+  open={openModal}
+  mode={mode}
+  campaign={selectedCampaign}
+  onClose={() => setOpenModal(false)}
+  onSubmit={
+    mode === "create"
+      ? createCampaign
+      : updateCampaign
+  }
+/>
 
+<DeleteCampaignDialog
+  open={openDeleteDialog}
+  campaignName={selectedCampaign?.name ?? ""}
+  loading={deleting}
+  onClose={() => setOpenDeleteDialog(false)}
+  onDelete={deleteCampaign}
+/>
       </main>
     </div>
   );
