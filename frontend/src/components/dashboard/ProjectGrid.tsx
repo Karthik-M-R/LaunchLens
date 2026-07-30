@@ -4,15 +4,23 @@ interface Project {
   id: string;
   name: string;
   website: string;
+  description?: string;
   createdAt: string;
 }
 
 interface ProjectGridProps {
   projects: Project[];
+
+  onOpen: (project: Project) => void;
+
+  onEdit: (project: Project) => void;
+
+  onDelete: (project: Project) => void;
 }
 
 const ProjectGrid = ({
-  projects,
+  projects,onOpen,
+  onEdit,onDelete
 }: ProjectGridProps) => {
   return (
 
@@ -29,13 +37,13 @@ const ProjectGrid = ({
 
       {projects.map((project) => (
 
-        <ProjectCard
-
-          key={project.id}
-
-          {...project}
-
-        />
+<ProjectCard
+  key={project.id}
+  {...project}
+  onOpen={() => onOpen(project)}
+  onEdit={() => onEdit(project)}
+  onDelete={() => onDelete(project)}
+/>
 
       ))}
 

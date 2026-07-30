@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import api from "../../api/axios";
 
 import Sidebar from "../../components/dashboard/Sidebar";
 import Topbar from "../../components/dashboard/Topbar";
 import ProjectGrid from "../../components/dashboard/ProjectGrid";
-import CreateProjectModal from "../../components/dashboard/CreateProjectModal";
+import ProjectFormModal from "../../components/dashboard/ProjectFormModal";
+import DeleteProjectDialog from "../../components/dashboard/DeleteProjectDialog";
 
 import EmptyState from "../../components/ui/EmptyState";
 import Loader from "../../components/ui/Loader";
@@ -17,13 +19,29 @@ interface Project {
   id: string;
   name: string;
   website: string;
+  description?: string;
   createdAt: string;
 }
 
 const Projects = () => {
+  const navigate = useNavigate();
+
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+
   const [openModal, setOpenModal] = useState(false);
+
+  const [mode, setMode] =
+    useState<"create" | "edit">("create");
+
+  const [openDeleteDialog, setOpenDeleteDialog] =
+    useState(false);
+
+  const [deleting, setDeleting] =
+    useState(false);
+
+  const [selectedProject, setSelectedProject] =
+    useState<Project | null>(null);
 
   const fetchProjects = useCallback(async () => {
     try {
@@ -40,6 +58,29 @@ const Projects = () => {
     fetchProjects();
   }, [fetchProjects]);
 
+  const openCreateModal = () => {
+    setMode("create");
+    setSelectedProject(null);
+    setOpenModal(true);
+  };
+
+  const openEditModal = (project: Project) => {
+    setMode("edit");
+    setSelectedProject(project);
+    setOpenModal(true);
+  };
+
+  const handleOpenDeleteDialog = (
+    project: Project
+  ) => {
+    setSelectedProject(project);
+    setOpenDeleteDialog(true);
+  };
+
+  const openProject = (project: Project) => {
+    navigate(`/projects/${project.id}`);
+  };
+
   const createProject = async (
     data: CreateProjectFormData
   ) => {
@@ -50,7 +91,58 @@ const Projects = () => {
 
       setOpenModal(false);
     } catch (error) {
-      console.error("Failed to create project:", error);
+      console.error(
+        "Failed to create project:",
+        error
+      );
+    }
+  };
+
+  const updateProject = async (
+    data: CreateProjectFormData
+  ) => {
+    if (!selectedProject) return;
+
+    try {
+      await api.patch(
+        `/projects/${selectedProject.id}`,
+        data
+      );
+
+      await fetchProjects();
+
+      setOpenModal(false);
+      setSelectedProject(null);
+      setMode("create");
+    } catch (error) {
+      console.error(
+        "Failed to update project:",
+        error
+      );
+    }
+  };
+
+  const deleteProject = async () => {
+    if (!selectedProject) return;
+
+    try {
+      setDeleting(true);
+
+      await api.delete(
+        `/projects/${selectedProject.id}`
+      );
+
+      await fetchProjects();
+
+      setOpenDeleteDialog(false);
+      setSelectedProject(null);
+    } catch (error) {
+      console.error(
+        "Failed to delete project:",
+        error
+      );
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -68,7 +160,7 @@ const Projects = () => {
           subtitle="Manage all your marketing projects."
           action={
             <Button
-              onClick={() => setOpenModal(true)}
+              onClick={openCreateModal}
               className="
                 rounded-xl
                 bg-indigo-600
@@ -95,14 +187,40 @@ const Projects = () => {
               description="Create your first marketing project to start tracking campaigns."
             />
           ) : (
-            <ProjectGrid projects={projects} />
+            <ProjectGrid
+              projects={projects}
+              onOpen={openProject}
+              onEdit={openEditModal}
+              onDelete={handleOpenDeleteDialog}
+            />
           )}
         </div>
 
-        <CreateProjectModal
+        <ProjectFormModal
           open={openModal}
-          onClose={() => setOpenModal(false)}
-          onCreate={createProject}
+          mode={mode}
+          project={selectedProject ?? undefined}
+          onClose={() => {
+            setOpenModal(false);
+            setSelectedProject(null);
+            setMode("create");
+          }}
+          onSubmit={
+            mode === "create"
+              ? createProject
+              : updateProject
+          }
+        />
+
+        <DeleteProjectDialog
+          open={openDeleteDialog}
+          projectName={selectedProject?.name}
+          loading={deleting}
+          onClose={() => {
+            setOpenDeleteDialog(false);
+            setSelectedProject(null);
+          }}
+          onDelete={deleteProject}
         />
       </main>
     </div>

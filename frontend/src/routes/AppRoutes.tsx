@@ -6,6 +6,7 @@ import Signup from "../pages/Signup";
 import ProtectedRoute from "./ProtectedRoute";
 import Dashboard from "../pages/dashboard/Dashboard";
 import Projects from "../pages/dashboard/Projects";
+import ProjectDetails from "../pages/dashboard/ProjectDetails";
 
 const AppRoutes = () => {
   return (
@@ -41,6 +42,13 @@ element={
       <Projects />
     </ProtectedRoute>
   }
+/>
+<Route
+
+path="/projects/:id"
+
+element={<ProjectDetails />}
+
 />
 
 

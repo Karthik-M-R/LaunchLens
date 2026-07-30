@@ -1,71 +1,65 @@
 import Card from "../ui/Card";
+import ProjectMenu from "./ProjectMenu";
 
 interface ProjectCardProps {
   id: string;
   name: string;
   website: string;
+  description?: string;
   createdAt: string;
+
+  onOpen: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
 }
 
 const ProjectCard = ({
-  id,
   name,
   website,
+  description,
   createdAt,
+  onOpen,
+  onEdit,
+  onDelete
 }: ProjectCardProps) => {
   return (
-    <Card className="transition hover:shadow-md">
+    <Card className="transition hover:shadow-lg">
+  <div className="space-y-5">
+    <div className="flex items-start justify-between">
+      <div>
+        <h2 className="text-xl font-semibold">
+          {name}
+        </h2>
 
-      <div className="space-y-4">
-
-        <div>
-
-          <h2 className="text-xl font-semibold text-gray-900">
-
-            {name}
-
-          </h2>
-
-          <a
-            href={website}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-1 block text-sm text-indigo-600 hover:underline"
-          >
-            {website}
-          </a>
-
-        </div>
-
-        <div className="flex items-center justify-between">
-
-          <span className="text-sm text-gray-500">
-
-            {new Date(createdAt).toLocaleDateString()}
-
-          </span>
-
-          <button
-            className="
-              rounded-lg
-              bg-gray-100
-              px-3
-              py-2
-              text-sm
-              font-medium
-              transition
-              hover:bg-indigo-600
-              hover:text-white
-            "
-          >
-            Open
-          </button>
-
-        </div>
-
+        <a
+          href={website}
+          target="_blank"
+          rel="noreferrer"
+          className="mt-1 block text-sm text-indigo-600 hover:underline"
+        >
+          {website}
+        </a>
       </div>
 
-    </Card>
+      <ProjectMenu
+        onOpen={onOpen}
+        onEdit={onEdit}
+        onDelete={onDelete}
+      />
+    </div>
+
+    {description && (
+      <p className="line-clamp-2 text-sm text-gray-600">
+        {description}
+      </p>
+    )}
+
+    <p className="text-sm text-gray-500">
+      Created{" "}
+      {new Date(createdAt).toLocaleDateString()}
+    </p>
+  </div>
+</Card>
   );
 };
 
