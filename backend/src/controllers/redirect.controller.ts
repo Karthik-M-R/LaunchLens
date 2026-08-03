@@ -2,18 +2,20 @@ import { Request, Response } from "express";
 
 import prisma from "../config/prisma";
 
+import { getVisitorId } from "../utils/getVisitorId";
+import { detectDevice } from "../utils/detectDevice";
+
 export const redirectToCampaign = async (
   req: Request,
   res: Response
 ) => {
   try {
-
-    const { trackingCode } = req.params as { trackingCode: string };
+    const { publicSlug } = req.params;
 
     const campaign =
       await prisma.campaign.findUnique({
         where: {
-          trackingCode,
+          publicSlug,
         },
       });
 
@@ -24,27 +26,33 @@ export const redirectToCampaign = async (
       });
     }
 
-    // await prisma.clickEvent.create({
-    //   data: {
+    const visitorId = getVisitorId(
+      req,
+      res
+    );
 
-    //     campaignId: campaign.id,
+    const device = detectDevice(
+      req.get("user-agent") ?? ""
+    );
 
-    //     visitorId: "temp-visitor",
+    await prisma.clickEvent.create({
+      data: {
+        campaignId: campaign.id,
 
-    //     ipAddress: req.ip ?? null,
+        visitorId,
 
-    //     browser:
-    //       req.get("user-agent") ?? null,
+        ipAddress:
+          req.ip ?? null,
 
-    //     referrer:
-    //       req.get("referer") ?? null,
+        device,
 
-    //     device: "Unknown",
-
-    //   },
-    // });
+        referrer:
+          req.get("referer") ?? null,
+      },
+    });
 
     return res.redirect(
+      302,
       campaign.destinationUrl
     );
 
