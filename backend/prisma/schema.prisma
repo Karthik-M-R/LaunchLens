@@ -8,11 +8,25 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+enum ConversionType {
+  SIGNUP
+  DOWNLOAD
+  PURCHASE
+  DEMO_BOOKED
+}
+
+enum DeviceType {
+  DESKTOP
+  MOBILE
+  TABLET
+  UNKNOWN
+}
+
 model User {
-  id       String @id @default(cuid())
-  name     String
-  email    String @unique
-  password String
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -23,13 +37,13 @@ model User {
 }
 
 model Project {
-  id          String  @id @default(cuid())
+  id          String   @id @default(cuid())
   name        String
   description String?
   website     String?
 
   userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   campaigns Campaign[]
 
@@ -37,6 +51,7 @@ model Project {
   updatedAt DateTime @updatedAt
 
   @@index([userId])
+
   @@map("projects")
 }
 
@@ -47,10 +62,17 @@ model Campaign {
 
   destinationUrl String
 
-  trackingCode String @unique
+  /// Used in public URLs
+  publicSlug String @unique
+
+  source String?
+
+  medium String?
+
+  campaignTag String?
 
   projectId String
-  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   clicks ClickEvent[]
 
@@ -58,6 +80,7 @@ model Campaign {
   updatedAt DateTime @updatedAt
 
   @@index([projectId])
+
   @@map("campaigns")
 }
 
@@ -65,18 +88,39 @@ model ClickEvent {
   id String @id @default(cuid())
 
   campaignId String
-  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  visitorId String
 
   ipAddress String?
-  country   String?
-  city      String?
-  device    String?
-  browser   String?
-  os        String?
-  referrer  String?
+
+  country String?
+
+  browser String?
+
+  device DeviceType @default(UNKNOWN)
+
+  referrer String?
 
   clickedAt DateTime @default(now())
 
+  conversion Conversion?
+
   @@index([campaignId])
+  @@index([visitorId])
+
   @@map("click_events")
+}
+
+model Conversion {
+  id String @id @default(cuid())
+
+  clickEventId String @unique
+  clickEvent ClickEvent @relation(fields: [clickEventId], references: [id], onDelete: Cascade)
+
+  type ConversionType
+
+  convertedAt DateTime @default(now())
+
+  @@map("conversions")
 }

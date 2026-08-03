@@ -6,8 +6,8 @@ import prisma from "../config/prisma";
 import {
   createCampaignSchema,
   updateCampaignSchema,
-} from "../validation/campaign";
-
+} from "../validation/campaign.validation";
+import { generatePublicSlug } from "../utils/generatePublicSlug";
 export const createCampaign = async (
   req: Request,
   res: Response
@@ -15,11 +15,10 @@ export const createCampaign = async (
   try {
     const userId = req.user!.userId;
 
-    const projectId = req.params.projectId;
+    const projectId = req.params.projectId as string;
 
     const data = createCampaignSchema.parse(req.body);
 
-    // Verify project belongs to logged-in user
     const project = await prisma.project.findFirst({
       where: {
         id: projectId,
@@ -34,38 +33,43 @@ export const createCampaign = async (
       });
     }
 
-    // Check duplicate tracking code
-    const existingCampaign =
-      await prisma.campaign.findUnique({
-        where: {
-          trackingCode: data.trackingCode,
-        },
-      });
-
-    if (existingCampaign) {
-      return res.status(409).json({
-        success: false,
-        message: "Tracking code already exists.",
-      });
-    }
+    const publicSlug =
+      generatePublicSlug(data.name);
 
     const campaign =
       await prisma.campaign.create({
         data: {
-          ...data,
+          name: data.name,
+
+          destinationUrl:
+            data.destinationUrl,
+
+          publicSlug,
+
           projectId,
         },
       });
 
     return res.status(201).json({
       success: true,
-      message: "Campaign created successfully.",
-      data: campaign,
+      message:
+        "Campaign created successfully.",
+      data: {
+        ...campaign,
+
+        trackingLink:
+          `${process.env.APP_URL}/r/${campaign.publicSlug}`,
+      },
     });
+
   } catch (error) {
+
     console.error(error);
 
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    if (
+      error instanceof
+      Prisma.PrismaClientKnownRequestError
+    ) {
       return res.status(400).json({
         success: false,
         message: error.message,
@@ -74,8 +78,10 @@ export const createCampaign = async (
 
     return res.status(500).json({
       success: false,
-      message: "Internal server error.",
+      message:
+        "Internal server error.",
     });
+
   }
 };
 
@@ -86,7 +92,7 @@ export const getCampaigns = async (
   try {
     const userId = req.user!.userId;
 
-    const projectId = req.params.projectId;
+    const projectId = req.params.projectId as string;
 
     const project = await prisma.project.findFirst({
       where: {
@@ -112,10 +118,18 @@ export const getCampaigns = async (
         },
       });
 
-    return res.json({
-      success: true,
-      data: campaigns,
-    });
+    const campaignsWithLinks =
+  campaigns.map((campaign) => ({
+    ...campaign,
+
+    trackingLink:
+      `${process.env.APP_URL}/r/${campaign.publicSlug}`,
+  }));
+
+return res.json({
+  success: true,
+  data: campaignsWithLinks,
+});
   } catch (error) {
     console.error(error);
 
@@ -133,7 +147,7 @@ export const updateCampaign = async (
   try {
     const userId = req.user!.userId;
 
-    const id = req.params.id;
+    const id = req.params.id as string;
 
     const data =
       updateCampaignSchema.parse(req.body);
@@ -155,19 +169,32 @@ export const updateCampaign = async (
       });
     }
 
-    const updatedCampaign =
-      await prisma.campaign.update({
-        where: {
-          id,
-        },
-        data,
-      });
+   const updatedCampaign =
+  await prisma.campaign.update({
+    where: {
+      id,
+    },
+    data: {
+      name: data.name,
 
-    return res.json({
-      success: true,
-      message: "Campaign updated successfully.",
-      data: updatedCampaign,
-    });
+      destinationUrl:
+        data.destinationUrl,
+    },
+  });
+
+return res.json({
+  success: true,
+  message:
+    "Campaign updated successfully.",
+  data: {
+    ...updatedCampaign,
+
+    trackingLink:
+      `${process.env.APP_URL}/r/${updatedCampaign.publicSlug}`,
+  },
+});
+
+  
   } catch (error) {
     console.error(error);
 
@@ -185,7 +212,7 @@ export const deleteCampaign = async (
   try {
     const userId = req.user!.userId;
 
-    const id = req.params.id;
+    const id = req.params.id as string;
 
     const campaign =
       await prisma.campaign.findFirst({

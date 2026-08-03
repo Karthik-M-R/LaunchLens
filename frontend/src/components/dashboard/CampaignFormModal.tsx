@@ -46,7 +46,6 @@ const CampaignFormModal = ({
     defaultValues: {
       name: "",
       destinationUrl: "",
-      trackingCode: "",
     },
   });
 
@@ -57,13 +56,11 @@ const CampaignFormModal = ({
       reset({
         name: campaign.name,
         destinationUrl: campaign.destinationUrl,
-        trackingCode: campaign.trackingCode,
       });
     } else {
       reset({
         name: "",
         destinationUrl: "",
-        trackingCode: "",
       });
     }
   }, [open, mode, campaign, reset]);
@@ -71,12 +68,14 @@ const CampaignFormModal = ({
   if (!open) return null;
 
   const submit = async (
-    data: CampaignFormData
-  ) => {
-    await onSubmit(data);
+  data: CampaignFormData
+) => {
+  
 
-    reset();
-  };
+  await onSubmit(data);
+
+  reset();
+};
 
   const handleClose = () => {
     reset();
@@ -120,6 +119,11 @@ const CampaignFormModal = ({
             : "Edit Campaign"}
         </h2>
 
+        <p className="mb-6 text-sm text-gray-500">
+          LaunchLens will automatically generate a unique
+          tracking link after the campaign is created.
+        </p>
+
         <form
           onSubmit={handleSubmit(submit)}
           className="space-y-5"
@@ -131,7 +135,7 @@ const CampaignFormModal = ({
 
             <input
               {...register("name")}
-              placeholder="Summer Sale"
+              placeholder="Reddit Marketing"
               className="
                 mt-2
                 w-full
@@ -184,34 +188,11 @@ const CampaignFormModal = ({
             )}
           </div>
 
-          <div>
-            <label className="text-sm font-medium text-gray-700">
-              Tracking Code
-            </label>
-
-            <input
-              {...register("trackingCode")}
-              placeholder="summer-sale"
-              className="
-                mt-2
-                w-full
-                rounded-xl
-                border
-                border-gray-300
-                p-3
-                outline-none
-                transition
-                focus:border-indigo-500
-                focus:ring-2
-                focus:ring-indigo-200
-              "
-            />
-
-            {errors.trackingCode && (
-              <p className="mt-1 text-sm text-red-600">
-                {errors.trackingCode.message}
-              </p>
-            )}
+          <div className="rounded-xl bg-indigo-50 p-4">
+            <p className="text-sm text-indigo-700">
+              A unique tracking link will be generated
+              automatically when this campaign is created.
+            </p>
           </div>
 
           <div className="flex justify-end gap-3 pt-2">

@@ -7,6 +7,7 @@ from "./routes/dashboard.routes";
 import authRoutes from "./routes/auth.routes";
 import projectRoutes from "./routes/project.routes";
 import campaignRoutes from "./routes/campaign.routes";
+import redirectRoutes from "./routes/redirect.routes";
 
 const app = express();
 
@@ -38,5 +39,6 @@ app.use(
   projectRoutes
 );
 app.use("/api", campaignRoutes);
+app.use("/r", redirectRoutes);
 app.use(errorHandler);
 export default app;

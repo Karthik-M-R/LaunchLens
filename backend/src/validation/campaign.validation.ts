@@ -9,13 +9,9 @@ export const createCampaignSchema = z.object({
 
   destinationUrl: z
     .string()
-    .url("Enter a valid URL"),
+    .url("Enter a valid URL")
 
-  trackingCode: z
-    .string()
-    .trim()
-    .min(3)
-    .max(50),
+
 });
 
 export const updateCampaignSchema =

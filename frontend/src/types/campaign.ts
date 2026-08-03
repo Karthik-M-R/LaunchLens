@@ -1,8 +1,15 @@
 export interface Campaign {
   id: string;
+
   name: string;
+
   destinationUrl: string;
-  trackingCode: string;
+
+  publicSlug: string;
+
+  trackingLink: string;
+
   createdAt: string;
+
   updatedAt: string;
 }
