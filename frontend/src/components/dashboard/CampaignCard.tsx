@@ -101,29 +101,33 @@ const CampaignCard = ({
 
       <div className="mt-6 grid grid-cols-3 gap-4 rounded-xl border border-gray-100 bg-gray-50 p-4">
 
-        <div>
+       <div className="mt-5 grid grid-cols-2 gap-4">
 
-          <p className="text-xs uppercase tracking-wide text-gray-500">
-            Clicks
-          </p>
+  <div className="rounded-lg bg-gray-50 p-3">
 
-          <p className="mt-2 text-2xl font-bold">
-            0
-          </p>
+    <p className="text-xs text-gray-500">
+      Total Clicks
+    </p>
 
-        </div>
+    <p className="mt-1 text-xl font-bold">
+      {campaign.totalClicks}
+    </p>
 
-        <div>
+  </div>
 
-          <p className="text-xs uppercase tracking-wide text-gray-500">
-            Visitors
-          </p>
+  <div className="rounded-lg bg-gray-50 p-3">
 
-          <p className="mt-2 text-2xl font-bold">
-            0
-          </p>
+    <p className="text-xs text-gray-500">
+      Unique Visitors
+    </p>
 
-        </div>
+    <p className="mt-1 text-xl font-bold">
+      {campaign.uniqueVisitors}
+    </p>
+
+  </div>
+
+</div>
 
         <div>
 

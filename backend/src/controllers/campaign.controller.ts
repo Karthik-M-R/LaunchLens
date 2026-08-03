@@ -92,14 +92,15 @@ export const getCampaigns = async (
   try {
     const userId = req.user!.userId;
 
-    const projectId = req.params.projectId as string;
+    const projectId = req.params.projectId as string ;
 
-    const project = await prisma.project.findFirst({
-      where: {
-        id: projectId,
-        userId,
-      },
-    });
+    const project =
+      await prisma.project.findFirst({
+        where: {
+          id: projectId,
+          userId,
+        },
+      });
 
     if (!project) {
       return res.status(404).json({
@@ -118,25 +119,58 @@ export const getCampaigns = async (
         },
       });
 
-    const campaignsWithLinks =
-  campaigns.map((campaign) => ({
-    ...campaign,
+    const campaignsWithAnalytics =
+      await Promise.all(
+        campaigns.map(async (campaign) => {
 
-    trackingLink:
-      `${process.env.APP_URL}/r/${campaign.publicSlug}`,
-  }));
+          const totalClicks =
+            await prisma.clickEvent.count({
+              where: {
+                campaignId: campaign.id,
+              },
+            });
 
-return res.json({
-  success: true,
-  data: campaignsWithLinks,
-});
+          const uniqueVisitors =
+            await prisma.clickEvent.findMany({
+              where: {
+                campaignId: campaign.id,
+              },
+
+              distinct: ["visitorId"],
+
+              select: {
+                visitorId: true,
+              },
+            });
+
+          return {
+            ...campaign,
+
+            trackingLink:
+              `${process.env.APP_URL}/r/${campaign.publicSlug}`,
+
+            totalClicks,
+
+            uniqueVisitors:
+              uniqueVisitors.length,
+          };
+        })
+      );
+
+    return res.json({
+      success: true,
+      data: campaignsWithAnalytics,
+    });
+
   } catch (error) {
+
     console.error(error);
 
     return res.status(500).json({
       success: false,
       message: "Internal server error.",
     });
+
   }
 };
 

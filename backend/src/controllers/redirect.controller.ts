@@ -10,7 +10,7 @@ export const redirectToCampaign = async (
   res: Response
 ) => {
   try {
-    const { publicSlug } = req.params;
+    const publicSlug = req.params.publicSlug as string;
 
     const campaign =
       await prisma.campaign.findUnique({

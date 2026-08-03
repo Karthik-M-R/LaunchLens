@@ -9,6 +9,8 @@ import projectRoutes from "./routes/project.routes";
 import campaignRoutes from "./routes/campaign.routes";
 import redirectRoutes
 from "./routes/redirect.routes";
+import analyticsRoutes
+from "./routes/analytics.routes";
 
 const app = express();
 
@@ -43,6 +45,10 @@ app.use("/api", campaignRoutes);
 app.use(
   "/r",
   redirectRoutes
+);
+app.use(
+  "/api",
+  analyticsRoutes
 );
 app.use(errorHandler);
 export default app;

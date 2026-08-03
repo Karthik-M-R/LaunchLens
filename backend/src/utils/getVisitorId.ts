@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { v4 as uuid } from "uuid";
+import crypto from "crypto";
 
 export const getVisitorId = (
   req: Request,
@@ -9,7 +9,7 @@ export const getVisitorId = (
     req.cookies?.ll_visitor;
 
   if (!visitorId) {
-    visitorId = uuid();
+    visitorId = crypto.randomUUID();
 
     res.cookie(
       "ll_visitor",

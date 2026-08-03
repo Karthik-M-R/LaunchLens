@@ -12,4 +12,7 @@ export interface Campaign {
   createdAt: string;
 
   updatedAt: string;
+  totalClicks: number;
+
+uniqueVisitors: number;
 }
