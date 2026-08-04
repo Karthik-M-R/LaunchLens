@@ -7,6 +7,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import Dashboard from "../pages/dashboard/Dashboard";
 import Projects from "../pages/dashboard/Projects";
 import ProjectDetails from "../pages/dashboard/ProjectDetails";
+import CampaignAnalytics from "../pages/dashboard/CampaignAnalytics";
 
 const AppRoutes = () => {
   return (
@@ -43,12 +44,23 @@ element={
     </ProtectedRoute>
   }
 />
+
 <Route
+  path="/projects/:id"
+  element={
+    <ProtectedRoute>
+      <ProjectDetails />
+    </ProtectedRoute>
+  }
+/>
 
-path="/projects/:id"
-
-element={<ProjectDetails />}
-
+<Route
+  path="/campaigns/:id/analytics"
+  element={
+    <ProtectedRoute>
+      <CampaignAnalytics />
+    </ProtectedRoute>
+  }
 />
 
 
