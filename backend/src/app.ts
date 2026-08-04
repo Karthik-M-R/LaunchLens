@@ -50,5 +50,8 @@ app.use(
   "/api",
   analyticsRoutes
 );
+
+
+
 app.use(errorHandler);
 export default app;
