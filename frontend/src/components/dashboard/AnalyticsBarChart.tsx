@@ -7,6 +7,11 @@ import {
   YAxis,
   Tooltip,
 } from "recharts";
+import ChartTooltip from "./ChartTooltip";
+import AnalyticsSection from "./AnalyticsSection";
+import EmptyAnalyticsState from "./EmptyAnalyticsState";
+
+
 
 interface Props {
 
@@ -26,13 +31,12 @@ const AnalyticsBarChart = ({
 
   return (
 
-    <div className="rounded-2xl bg-white p-6 shadow">
+    <AnalyticsSection title={title}>
 
-      <h2 className="mb-6 text-xl font-semibold">
-        {title}
-      </h2>
-
-      <div className="h-80">
+      {!data || data.length === 0 ? (
+        <EmptyAnalyticsState title={title} />
+      ) : (
+        <div className="h-80">
 
         <ResponsiveContainer>
 
@@ -44,7 +48,7 @@ const AnalyticsBarChart = ({
 
             <YAxis/>
 
-            <Tooltip/>
+            <Tooltip content={<ChartTooltip />} />
 
             <Bar
               dataKey="count"
@@ -55,9 +59,10 @@ const AnalyticsBarChart = ({
 
         </ResponsiveContainer>
 
-      </div>
+        </div>
+      )}
 
-    </div>
+    </AnalyticsSection>
 
   );
 

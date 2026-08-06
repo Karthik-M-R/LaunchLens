@@ -5,6 +5,9 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import ChartTooltip from "./ChartTooltip";
+import AnalyticsSection from "./AnalyticsSection";
+import EmptyAnalyticsState from "./EmptyAnalyticsState";
 
 interface Props {
   data: {
@@ -26,15 +29,12 @@ const DeviceChart = ({
 
   return (
 
-    <div className="rounded-2xl bg-white p-6 shadow">
+    <AnalyticsSection title="Devices">
 
-      <h2 className="mb-6 text-xl font-semibold">
-
-        Devices
-
-      </h2>
-
-      <div className="h-80">
+      {!data || data.length === 0 ? (
+        <EmptyAnalyticsState title="Devices" />
+      ) : (
+        <div className="h-80">
 
         <ResponsiveContainer>
 
@@ -70,15 +70,16 @@ const DeviceChart = ({
 
             </Pie>
 
-            <Tooltip />
+            <Tooltip content={<ChartTooltip />} />
 
           </PieChart>
 
         </ResponsiveContainer>
 
-      </div>
+        </div>
+      )}
 
-    </div>
+    </AnalyticsSection>
 
   );
 

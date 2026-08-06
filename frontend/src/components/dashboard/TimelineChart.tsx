@@ -7,6 +7,9 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
+import ChartTooltip from "./ChartTooltip";
+import AnalyticsSection from "./AnalyticsSection";
+import EmptyAnalyticsState from "./EmptyAnalyticsState";
 
 interface Props {
   data: {
@@ -19,13 +22,12 @@ const TimelineChart = ({
   data,
 }: Props) => {
   return (
-    <div className="mt-8 rounded-2xl bg-white p-6 shadow">
+    <AnalyticsSection title="Click Timeline" className="mt-8">
 
-      <h2 className="mb-6 text-xl font-semibold">
-        Click Timeline
-      </h2>
-
-      <div className="h-80">
+      {!data || data.length === 0 ? (
+        <EmptyAnalyticsState title="Click Timeline" />
+      ) : (
+        <div className="h-80">
 
         <ResponsiveContainer>
 
@@ -37,7 +39,7 @@ const TimelineChart = ({
 
             <YAxis />
 
-            <Tooltip />
+            <Tooltip content={<ChartTooltip />} />
 
             <Line
               type="monotone"
@@ -50,9 +52,10 @@ const TimelineChart = ({
 
         </ResponsiveContainer>
 
-      </div>
+        </div>
+      )}
 
-    </div>
+    </AnalyticsSection>
   );
 };
 

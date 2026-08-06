@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 import api from "../../api/axios";
 
 import Loader from "../../components/ui/Loader";
+import Button from "../../components/ui/Button";
 import Sidebar from "../../components/dashboard/Sidebar";
 import Topbar from "../../components/dashboard/Topbar";
 
@@ -15,6 +16,7 @@ import AnalyticsBarChart from "../../components/dashboard/AnalyticsBarChart";
 
 const CampaignAnalytics = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
 
@@ -62,6 +64,12 @@ const CampaignAnalytics = () => {
         />
 
         <div className="mx-auto max-w-7xl space-y-8 p-8">
+        <Button
+  variant="secondary"
+  onClick={() => navigate(-1)}
+>
+  ← Back to Project
+</Button>
 
           <AnalyticsHeader
             campaign={analytics.campaign}
