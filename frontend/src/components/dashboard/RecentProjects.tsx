@@ -1,5 +1,3 @@
-import Card from "../ui/Card";
-import EmptyState from "../ui/EmptyState";
 import Button from "../ui/Button";
 
 interface Project {
@@ -16,67 +14,38 @@ const RecentProjects = ({
 }: RecentProjectsProps) => {
 
   return (
-
-    <Card>
-
-      <h2 className="mb-6 text-xl font-semibold text-gray-900">
-
-        Recent Projects
-
+    <div className="flex flex-col">
+      <h2 className="text-xs font-semibold tracking-wider text-[#94A3B8] uppercase mb-3">
+        RECENT PROJECTS
       </h2>
+      <div className="h-px bg-[#243342] w-full mb-2" />
 
       {projects.length === 0 ? (
-
-        <EmptyState
-
-          title="No Projects"
-
-          description="Create your first project to start tracking campaigns."
-
-          action={
-
-            <Button>
-
-              Create Project
-
-            </Button>
-
-          }
-
-        />
-
-      ) : (
-
-        <div className="space-y-4">
-
-          {projects.map((project) => (
-
-            <div
-
-              key={project.id}
-
-              className="rounded-xl border border-gray-200 p-4"
-
-            >
-
-              <p className="font-medium">
-
-                {project.name}
-
-              </p>
-
-            </div>
-
-          ))}
-
+        <div className="py-4">
+          <p className="text-[#F1F5F9] font-medium mb-1">No projects yet</p>
+          <p className="text-sm text-[#94A3B8] mb-4">
+            Create your first workspace to start tracking campaign performance.
+          </p>
+          <Button variant="primary">
+            + New Project
+          </Button>
         </div>
-
+      ) : (
+        <div className="flex flex-col">
+          {projects.map((project, index) => (
+            <div
+              key={project.id}
+              className={`py-4 ${index !== projects.length - 1 ? 'border-b border-[#243342]' : ''}`}
+            >
+              <p className="font-medium text-[#F1F5F9]">
+                {project.name}
+              </p>
+            </div>
+          ))}
+        </div>
       )}
-
-    </Card>
-
+    </div>
   );
-
 };
 
 export default RecentProjects;

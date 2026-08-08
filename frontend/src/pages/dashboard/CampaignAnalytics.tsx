@@ -5,14 +5,13 @@ import api from "../../api/axios";
 
 import Loader from "../../components/ui/Loader";
 import Button from "../../components/ui/Button";
-import Sidebar from "../../components/dashboard/Sidebar";
-import Topbar from "../../components/dashboard/Topbar";
 
 import AnalyticsHeader from "../../components/dashboard/AnalyticsHeader";
 import AnalyticsCards from "../../components/dashboard/AnalyticsCards";
 import TimelineChart from "../../components/dashboard/TimelineChart";
 import DeviceChart from "../../components/dashboard/DeviceChart";
 import AnalyticsBarChart from "../../components/dashboard/AnalyticsBarChart";
+import DashboardShell from "../../components/dashboard/DashboardShell";
 
 const CampaignAnalytics = () => {
   const { id } = useParams();
@@ -54,22 +53,17 @@ const CampaignAnalytics = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 md:flex">
-      <Sidebar />
-
-      <main className="flex-1">
-        <Topbar
-          title="Campaign Analytics"
-          subtitle="Performance Overview"
-        />
-
-        <div className="mx-auto max-w-7xl space-y-8 p-8">
+    <DashboardShell
+      title="Campaign Analytics"
+      subtitle="Turn campaign traffic into actionable insights."
+    >
+        <div className="mx-auto w-full max-w-7xl space-y-8 px-4 py-6 sm:px-6 lg:px-8">
         <Button
-  variant="secondary"
-  onClick={() => navigate(-1)}
->
-  ← Back to Project
-</Button>
+          variant="secondary"
+          onClick={() => navigate(-1)}
+        >
+          ← Back to Project
+        </Button>
 
           <AnalyticsHeader
             campaign={analytics.campaign}
@@ -85,7 +79,7 @@ const CampaignAnalytics = () => {
             data={analytics.timeline}
           />
 
-          <div className="grid gap-8 lg:grid-cols-2">
+          <div className="grid gap-6 lg:grid-cols-2">
 
             <DeviceChart
               data={analytics.devices}
@@ -112,8 +106,7 @@ const CampaignAnalytics = () => {
           </div>
 
         </div>
-      </main>
-    </div>
+    </DashboardShell>
   );
 };
 

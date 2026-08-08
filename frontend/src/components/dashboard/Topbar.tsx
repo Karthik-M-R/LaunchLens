@@ -1,146 +1,92 @@
-import { useAuth } from "../../context/AuthContext";
+import { Menu } from "lucide-react";
 import type { ReactNode } from "react";
 
 interface TopbarProps {
   title: string;
   subtitle: string;
   action?: ReactNode;
+  onMenuClick?: () => void;
 }
 
 const Topbar = ({
   title,
   subtitle,
   action,
+  onMenuClick,
 }: TopbarProps) => {
 
-  const { user } = useAuth();
-
-  const initials =
-    user?.name
-      ?.split(" ")
-      .map((word) => word[0])
-      .join("")
-      .toUpperCase() || "U";
-
   return (
-
     <header
       className="
-        flex
-        flex-col
-        gap-5
+        sticky
+        top-0
+        z-20
         border-b
-        border-gray-200
-        bg-white
-        px-8
-        py-6
-
-        md:flex-row
-        md:items-center
-        md:justify-between
+        border-[#243342]
+        bg-[#080D14]/90
+        px-4
+        py-4
+        backdrop-blur
+        sm:px-6
+        lg:px-8
+        flex
+        items-center
+        justify-between
+        min-h-[64px]
       "
     >
-
-      <div>
-
-        <h1
-          className="
-            text-3xl
-            font-bold
-            text-gray-900
-          "
-        >
-
-          {title}
-
-        </h1>
-
-        <p
-          className="
-            mt-2
-            text-gray-500
-          "
-        >
-
-          {subtitle}
-
-        </p>
-
-      </div>
-
-      <div
-        className="
-          flex
-          items-center
-          gap-6
-        "
-      >
-        {action && (
-          <div className="flex items-center">
-            {action}
-          </div>
-        )}
-
-        {action && (
-          <div className="h-8 w-px bg-gray-200 hidden md:block" />
-        )}
-
-        <div className="flex items-center gap-4">
-          <div
-            className="
-              text-right
-            "
-          >
-
-            <p
+      <div className="flex items-start justify-between gap-4 w-full">
+        <div className="flex min-w-0 items-center gap-3">
+          {onMenuClick && (
+            <button
+              type="button"
+              onClick={onMenuClick}
               className="
-                font-semibold
-                text-gray-900
+                inline-flex
+                h-10
+                w-10
+                shrink-0
+                items-center
+                justify-center
+                rounded-lg
+                border
+                border-[#243342]
+                bg-[#111923]
+                text-[#94A3B8]
+                transition-all
+                duration-200
+                ease-in-out
+                hover:border-[#38BDF8]
+                hover:text-[#F1F5F9]
+                md:hidden
               "
+              aria-label="Open navigation menu"
             >
-
-              {user?.name}
-
-            </p>
-
-            <p
-              className="
-                text-sm
-                text-gray-500
-              "
-            >
-
-              {user?.email}
-
-            </p>
-
-          </div>
-
-          <div
-            className="
-              flex
-              h-11
-              w-11
-              items-center
-              justify-center
-              rounded-full
-              bg-indigo-600
-              font-semibold
-              text-white
-            "
-          >
-
-            {initials}
-
+              <Menu size={18} />
+            </button>
+          )}
+          <div className="min-w-0 flex flex-col justify-center">
+            <h1 className="text-xl font-semibold tracking-tight text-[#F1F5F9] sm:text-2xl">
+              {title}
+            </h1>
+            {subtitle && (
+              <p className="text-xs text-[#94A3B8] sm:text-sm mt-0.5">
+                {subtitle}
+              </p>
+            )}
           </div>
         </div>
 
+        <div className="flex items-center gap-4">
+          {action && (
+            <div className="flex items-center">
+              {action}
+            </div>
+          )}
+        </div>
       </div>
-
     </header>
-
   );
-
 };
 
 export default Topbar;

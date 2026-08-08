@@ -11,21 +11,14 @@ const AnalyticsSection = ({
   children,
   className = "",
 }: Props) => {
-
   return (
-
-    <div className={`rounded-2xl bg-white p-6 shadow ${className}`.trim()}>
-
-      <h2 className="mb-6 text-xl font-semibold">
+    <div className={`rounded-lg border border-[#243342] bg-[#111923] p-5 sm:p-6 ${className}`.trim()}>
+      <h2 className="mb-6 text-xs font-semibold tracking-wider text-[#94A3B8] uppercase">
         {title}
       </h2>
-
       {children}
-
     </div>
-
   );
-
 };
 
 export default AnalyticsSection;

@@ -18,7 +18,7 @@ const CampaignList = ({
     return (
       <EmptyState
         title="No campaigns yet"
-        description="Create your first campaign to start tracking clicks and conversions."
+        description="Create a campaign to start measuring traffic."
       />
     );
   }

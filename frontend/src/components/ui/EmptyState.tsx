@@ -12,22 +12,18 @@ const EmptyState = ({
   action,
 }: EmptyStateProps) => {
   return (
-    <div className="rounded-2xl border border-dashed border-gray-300 bg-white p-10 text-center">
-
-      <h2 className="text-xl font-semibold text-gray-900">
+    <div className="py-8">
+      <h2 className="text-lg font-semibold text-[#F1F5F9]">
         {title}
       </h2>
-
-      <p className="mt-2 text-gray-500">
+      <p className="mt-2 text-sm text-[#94A3B8] max-w-md">
         {description}
       </p>
-
       {action && (
         <div className="mt-6">
           {action}
         </div>
       )}
-
     </div>
   );
 };

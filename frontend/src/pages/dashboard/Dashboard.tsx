@@ -1,10 +1,9 @@
-import Sidebar from "../../components/dashboard/Sidebar";
-import Topbar from "../../components/dashboard/Topbar";
 import StatsGrid from "../../components/dashboard/StatsGrid";
 import RecentProjects from "../../components/dashboard/RecentProjects";
 import RecentActivity from "../../components/dashboard/RecentActivity";
 
 import Loader from "../../components/ui/Loader";
+import DashboardShell from "../../components/dashboard/DashboardShell";
 
 import { useDashboard } from "../../hooks/useDashboard";
 
@@ -46,21 +45,12 @@ const Dashboard = () => {
 
   return (
 
-    <div className="min-h-screen bg-gray-50 md:flex">
+    <DashboardShell
+      title="Dashboard"
+      subtitle="See what's driving your growth."
+    >
 
-      <Sidebar />
-
-      <main className="flex-1">
-
-        <Topbar
-
-          title="Dashboard"
-
-          subtitle="Overview of your marketing workspace."
-
-        />
-
-        <div className="space-y-8 p-8">
+      <div className="space-y-8 px-4 py-6 sm:px-6 lg:px-8">
 
           <StatsGrid
 
@@ -78,7 +68,7 @@ const Dashboard = () => {
 
           />
 
-          <div className="grid gap-8 lg:grid-cols-2">
+          <div className="grid gap-6 lg:grid-cols-2">
 
             <RecentProjects
 
@@ -98,11 +88,9 @@ const Dashboard = () => {
 
           </div>
 
-        </div>
+      </div>
 
-      </main>
-
-    </div>
+    </DashboardShell>
 
   );
 

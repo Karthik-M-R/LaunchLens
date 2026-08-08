@@ -1,6 +1,3 @@
-import Card from "../ui/Card";
-import EmptyState from "../ui/EmptyState";
-
 interface Activity {
   id: string;
   message: string;
@@ -15,53 +12,35 @@ const RecentActivity = ({
 }: RecentActivityProps) => {
 
   return (
-
-    <Card>
-
-      <h2 className="mb-6 text-xl font-semibold text-gray-900">
-
-        Recent Activity
-
+    <div className="flex flex-col">
+      <h2 className="text-xs font-semibold tracking-wider text-[#94A3B8] uppercase mb-3">
+        RECENT ACTIVITY
       </h2>
+      <div className="h-px bg-[#243342] w-full mb-2" />
 
       {activities.length === 0 ? (
-
-        <EmptyState
-
-          title="No Activity"
-
-          description="Activity will appear here as you use LaunchLens."
-
-        />
-
-      ) : (
-
-        <div className="space-y-4">
-
-          {activities.map((activity) => (
-
-            <div
-
-              key={activity.id}
-
-              className="border-l-2 border-indigo-500 pl-4"
-
-            >
-
-              {activity.message}
-
-            </div>
-
-          ))}
-
+        <div className="py-4">
+          <p className="text-[#F1F5F9] font-medium mb-1">No recent activity</p>
+          <p className="text-sm text-[#94A3B8]">
+            Activity will appear as your campaigns receive traffic.
+          </p>
         </div>
-
+      ) : (
+        <div className="flex flex-col">
+          {activities.map((activity, index) => (
+            <div
+              key={activity.id}
+              className={`py-4 ${index !== activities.length - 1 ? 'border-b border-[#243342]' : ''}`}
+            >
+              <p className="text-sm leading-6 text-[#94A3B8]">
+                {activity.message}
+              </p>
+            </div>
+          ))}
+        </div>
       )}
-
-    </Card>
-
+    </div>
   );
-
 };
 
 export default RecentActivity;

@@ -18,16 +18,10 @@ interface Project {
 
 interface Props {
   open: boolean;
-
   mode: "create" | "edit";
-
   project?: Project;
-
   onClose: () => void;
-
-  onSubmit: (
-    data: CreateProjectFormData
-  ) => Promise<void>;
+  onSubmit: (data: CreateProjectFormData) => Promise<void>;
 }
 
 const ProjectFormModal = ({
@@ -41,13 +35,9 @@ const ProjectFormModal = ({
     register,
     handleSubmit,
     reset,
-    formState: {
-      errors,
-      isSubmitting,
-    },
+    formState: { errors, isSubmitting },
   } = useForm<CreateProjectFormData>({
     resolver: zodResolver(createProjectSchema),
-
     defaultValues: {
       name: "",
       website: "",
@@ -57,7 +47,6 @@ const ProjectFormModal = ({
 
   useEffect(() => {
     if (!open) return;
-
     if (mode === "edit" && project) {
       reset({
         name: project.name,
@@ -75,161 +64,64 @@ const ProjectFormModal = ({
 
   if (!open) return null;
 
-  const submit = async (
-    data: CreateProjectFormData
-  ) => {
+  const submit = async (data: CreateProjectFormData) => {
     await onSubmit(data);
-
     reset();
   };
 
   const handleClose = () => {
     reset();
-
     onClose();
   };
 
   return (
-    <div
-      className="
-        fixed
-        inset-0
-        z-50
-        flex
-        items-center
-        justify-center
-        bg-black/40
-        p-4
-      "
-    >
-      <div
-        className="
-          w-full
-          max-w-lg
-          rounded-2xl
-          bg-white
-          p-8
-          shadow-2xl
-        "
-      >
-        <h2
-          className="
-            mb-6
-            text-2xl
-            font-bold
-            text-gray-900
-          "
-        >
-          {mode === "create"
-            ? "Create Project"
-            : "Edit Project"}
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#080D14]/80 p-4">
+      <div className="w-full max-w-lg rounded-lg border border-[#243342] bg-[#16222E] p-6 shadow-2xl sm:p-8">
+        <h2 className="mb-6 text-2xl font-semibold tracking-tight text-[#F1F5F9]">
+          {mode === "create" ? "Create Project" : "Edit Project"}
         </h2>
 
-        <form
-          onSubmit={handleSubmit(submit)}
-          className="space-y-5"
-        >
+        <form onSubmit={handleSubmit(submit)} className="space-y-5">
           <div>
-            <label className="text-sm font-medium text-gray-700">
-              Project Name
-            </label>
-
+            <label className="text-sm font-medium text-[#94A3B8]">Project Name</label>
             <input
               {...register("name")}
               placeholder="LaunchLens"
-              className="
-                mt-2
-                w-full
-                rounded-xl
-                border
-                border-gray-300
-                p-3
-                outline-none
-                transition
-                focus:border-indigo-500
-                focus:ring-2
-                focus:ring-indigo-200
-              "
+              className="mt-2 w-full rounded-md border border-[#243342] bg-[#111923] text-[#F1F5F9] p-3 outline-none transition-all focus:border-[#22D3C5]"
             />
-
             {errors.name && (
-              <p className="mt-1 text-sm text-red-600">
-                {errors.name.message}
-              </p>
+              <p className="mt-1 text-sm text-[#FB7185]">{errors.name.message}</p>
             )}
           </div>
 
           <div>
-            <label className="text-sm font-medium text-gray-700">
-              Website
-            </label>
-
+            <label className="text-sm font-medium text-[#94A3B8]">Website</label>
             <input
               {...register("website")}
               placeholder="https://launchlens.com"
-              className="
-                mt-2
-                w-full
-                rounded-xl
-                border
-                border-gray-300
-                p-3
-                outline-none
-                transition
-                focus:border-indigo-500
-                focus:ring-2
-                focus:ring-indigo-200
-              "
+              className="mt-2 w-full rounded-md border border-[#243342] bg-[#111923] text-[#F1F5F9] p-3 outline-none transition-all focus:border-[#22D3C5]"
             />
-
             {errors.website && (
-              <p className="mt-1 text-sm text-red-600">
-                {errors.website.message}
-              </p>
+              <p className="mt-1 text-sm text-[#FB7185]">{errors.website.message}</p>
             )}
           </div>
 
           <div>
-            <label className="text-sm font-medium text-gray-700">
-              Description
-            </label>
-
+            <label className="text-sm font-medium text-[#94A3B8]">Description</label>
             <textarea
               rows={4}
               {...register("description")}
               placeholder="Short description about the project..."
-              className="
-                mt-2
-                w-full
-                rounded-xl
-                border
-                border-gray-300
-                p-3
-                outline-none
-                transition
-                focus:border-indigo-500
-                focus:ring-2
-                focus:ring-indigo-200
-              "
+              className="mt-2 w-full rounded-md border border-[#243342] bg-[#111923] text-[#F1F5F9] p-3 outline-none transition-all focus:border-[#22D3C5]"
             />
           </div>
 
           <div className="flex justify-end gap-3 pt-2">
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={handleClose}
-            >
+            <Button type="button" variant="secondary" onClick={handleClose}>
               Cancel
             </Button>
-
-            <Button
-              type="submit"
-              loading={isSubmitting}
-            >
-              {mode === "create"
-                ? "Create Project"
-                : "Save Changes"}
+            <Button type="submit" loading={isSubmitting}>
+              {mode === "create" ? "Create Project" : "Save Changes"}
             </Button>
           </div>
         </form>

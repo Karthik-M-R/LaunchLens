@@ -19,20 +19,23 @@ const Button = ({
     inline-flex
     items-center
     justify-center
-    rounded-xl
+    rounded-lg
+    border
     px-5
     py-2.5
     text-sm
     font-semibold
-    transition
+    transition-all
+    duration-200
+    ease-in-out
     disabled:cursor-not-allowed
     disabled:opacity-50
   `.replace(/\s+/g, " ").trim();
 
   const variantClasses =
     variant === "primary"
-      ? "bg-indigo-600 text-white hover:bg-indigo-700"
-      : "bg-gray-100 text-gray-900 hover:bg-gray-200";
+      ? "border-transparent bg-[#22D3C5] text-[#080D14] hover:bg-[#14B8A6]"
+      : "border-[#243342] bg-[#111923] text-[#F1F5F9] hover:bg-[#16222E]";
 
   return (
     <button

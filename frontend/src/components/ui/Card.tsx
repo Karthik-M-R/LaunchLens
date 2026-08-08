@@ -12,12 +12,14 @@ const Card = ({
   return (
     <div
       className={`
-        rounded-2xl
+        rounded-lg
         border
-        border-gray-200
-        bg-white
-        shadow-sm
+        border-[#243342]
+        bg-[#111923]
         p-6
+        transition-all
+        duration-200
+        ease-in-out
         ${className}
       `}
     >

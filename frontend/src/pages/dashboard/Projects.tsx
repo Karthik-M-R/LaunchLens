@@ -3,8 +3,6 @@ import { useNavigate } from "react-router-dom";
 
 import api from "../../api/axios";
 
-import Sidebar from "../../components/dashboard/Sidebar";
-import Topbar from "../../components/dashboard/Topbar";
 import ProjectGrid from "../../components/dashboard/ProjectGrid";
 import ProjectFormModal from "../../components/dashboard/ProjectFormModal";
 import DeleteProjectDialog from "../../components/dashboard/DeleteProjectDialog";
@@ -12,6 +10,7 @@ import DeleteProjectDialog from "../../components/dashboard/DeleteProjectDialog"
 import EmptyState from "../../components/ui/EmptyState";
 import Loader from "../../components/ui/Loader";
 import Button from "../../components/ui/Button";
+import DashboardShell from "../../components/dashboard/DashboardShell";
 
 import type { CreateProjectFormData } from "../../validation/project";
 
@@ -151,40 +150,20 @@ const Projects = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 md:flex">
-      <Sidebar />
-
-      <main className="flex-1">
-        <Topbar
-          title="Projects"
-          subtitle="Manage all your marketing projects."
-          action={
-            <Button
-              onClick={openCreateModal}
-              className="
-                rounded-xl
-                bg-indigo-600
-                px-5
-                py-2.5
-                text-sm
-                font-semibold
-                text-white
-                shadow-sm
-                transition
-                hover:bg-indigo-700
-                hover:shadow-md
-              "
-            >
-              + New Project
-            </Button>
-          }
-        />
-
-        <div className="p-8">
+    <DashboardShell
+      title="Projects"
+      subtitle="Organize your launches and track what works."
+      action={
+        <Button onClick={openCreateModal}>
+          + New Project
+        </Button>
+      }
+    >
+      <div className="px-4 py-6 sm:px-6 lg:px-8">
           {projects.length === 0 ? (
             <EmptyState
               title="No Projects Yet"
-              description="Create your first marketing project to start tracking campaigns."
+              description="Create your first project to start tracking campaign performance."
             />
           ) : (
             <ProjectGrid
@@ -194,7 +173,7 @@ const Projects = () => {
               onDelete={handleOpenDeleteDialog}
             />
           )}
-        </div>
+      </div>
 
         <ProjectFormModal
           open={openModal}
@@ -222,8 +201,7 @@ const Projects = () => {
           }}
           onDelete={deleteProject}
         />
-      </main>
-    </div>
+    </DashboardShell>
   );
 };
 

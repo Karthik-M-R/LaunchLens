@@ -19,15 +19,19 @@ interface ProjectGridProps {
 }
 
 const ProjectGrid = ({
-  projects,onOpen,
-  onEdit,onDelete
+  projects,
+  onOpen,
+  onEdit,
+  onDelete
 }: ProjectGridProps) => {
   return (
 
     <div
       className="
         grid
-        gap-6
+        gap-4
+
+        sm:grid-cols-2
 
         md:grid-cols-2
 

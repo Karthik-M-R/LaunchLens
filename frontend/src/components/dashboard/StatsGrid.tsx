@@ -22,7 +22,7 @@ const StatsGrid = ({
     <section
       className="
         grid
-        gap-6
+        gap-4
 
         md:grid-cols-2
 
@@ -34,18 +34,21 @@ const StatsGrid = ({
         title="Projects"
         value={projects}
         icon={FolderKanban}
+        description="Your active marketing workspaces"
       />
 
       <StatCard
         title="Campaigns"
         value={campaigns}
         icon={Megaphone}
+        description="Live campaigns under measurement"
       />
 
       <StatCard
         title="Total Clicks"
         value={clicks}
         icon={MousePointerClick}
+        description="Combined tracked traffic"
       />
 
     </section>

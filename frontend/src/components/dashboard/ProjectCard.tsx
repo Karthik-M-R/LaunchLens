@@ -1,4 +1,3 @@
-import Card from "../ui/Card";
 import ProjectMenu from "./ProjectMenu";
 
 interface ProjectCardProps {
@@ -23,43 +22,38 @@ const ProjectCard = ({
   onDelete
 }: ProjectCardProps) => {
   return (
-    <Card className="transition hover:shadow-lg">
-  <div className="space-y-5">
-    <div className="flex items-start justify-between">
+    <div className="flex flex-col justify-between rounded-lg border border-[#243342] bg-[#111923] p-5 transition-colors hover:border-[#38BDF8]/50">
       <div>
-        <h2 className="text-xl font-semibold">
-          {name}
-        </h2>
-
-        <a
-          href={website}
-          target="_blank"
-          rel="noreferrer"
-          className="mt-1 block text-sm text-indigo-600 hover:underline"
-        >
-          {website}
-        </a>
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            <h2 className="text-lg font-semibold tracking-tight text-[#F1F5F9]">
+              {name}
+            </h2>
+            <a
+              href={website}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-1 block truncate text-sm text-[#22D3C5] transition-colors hover:text-[#14B8A6] hover:underline"
+            >
+              {website}
+            </a>
+          </div>
+          <ProjectMenu
+            onOpen={onOpen}
+            onEdit={onEdit}
+            onDelete={onDelete}
+          />
+        </div>
+        {description && (
+          <p className="mt-3 line-clamp-3 text-sm leading-6 text-[#94A3B8]">
+            {description}
+          </p>
+        )}
       </div>
-
-      <ProjectMenu
-        onOpen={onOpen}
-        onEdit={onEdit}
-        onDelete={onDelete}
-      />
-    </div>
-
-    {description && (
-      <p className="line-clamp-2 text-sm text-gray-600">
-        {description}
+      <p className="mt-4 text-xs text-[#94A3B8]">
+        Created {new Date(createdAt).toLocaleDateString()}
       </p>
-    )}
-
-    <p className="text-sm text-gray-500">
-      Created{" "}
-      {new Date(createdAt).toLocaleDateString()}
-    </p>
-  </div>
-</Card>
+    </div>
   );
 };
 
