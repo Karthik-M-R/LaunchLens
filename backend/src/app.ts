@@ -17,7 +17,10 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: [
+      "http://localhost:5173",
+      "https://launch-lens-8n9130ue4-karthik-m-rs-projects.vercel.app",
+    ],
     credentials: true,
   })
 );
