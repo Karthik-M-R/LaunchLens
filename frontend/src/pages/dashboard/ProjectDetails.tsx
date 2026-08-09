@@ -198,8 +198,8 @@ const deleteCampaign = async () => {
             ← Back to Projects
           </Button>
 
-          <div className="pt-4 pb-8 border-b border-[#243342]">
-            <h2 className="text-3xl font-semibold tracking-tight text-[#F1F5F9]">
+          <div className="pt-4 pb-8 border-b border-slate-200">
+            <h2 className="text-3xl font-semibold tracking-tight text-slate-900">
               {project.name}
             </h2>
 
@@ -207,19 +207,19 @@ const deleteCampaign = async () => {
               href={project.website}
               target="_blank"
               rel="noreferrer"
-              className="mt-2 inline-block break-words text-sm text-[#22D3C5] transition-colors duration-200 hover:text-[#14B8A6] hover:underline"
+              className="mt-2 inline-block break-words text-sm font-medium text-teal-600 transition-colors duration-200 hover:text-teal-700 hover:underline"
             >
               {project.website}
             </a>
 
-            <p className="mt-4 max-w-3xl text-sm leading-7 text-[#94A3B8]">
+            <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-600">
               {project.description || "No description provided."}
             </p>
           </div>
 
           <div className="pt-4">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
-              <h2 className="text-sm font-semibold tracking-wider text-[#94A3B8] uppercase">
+              <h2 className="text-sm font-semibold tracking-wider text-slate-500 uppercase">
                 CAMPAIGNS
               </h2>
 

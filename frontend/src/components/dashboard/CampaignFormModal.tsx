@@ -66,44 +66,44 @@ const CampaignFormModal = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#080D14]/80 p-4">
-      <div className="w-full max-w-lg rounded-lg border border-[#243342] bg-[#16222E] p-6 shadow-2xl sm:p-8">
-        <h2 className="mb-6 text-2xl font-semibold tracking-tight text-[#F1F5F9]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
+      <div className="w-full max-w-lg rounded-xl border border-slate-200 bg-white p-6 shadow-2xl sm:p-8">
+        <h2 className="mb-6 text-2xl font-semibold tracking-tight text-slate-900">
           {mode === "create" ? "Create Campaign" : "Edit Campaign"}
         </h2>
 
-        <p className="mb-6 text-sm leading-6 text-[#94A3B8]">
+        <p className="mb-6 text-sm leading-6 text-slate-600">
           LaunchLens will automatically generate a unique tracking link after the campaign is created.
         </p>
 
         <form onSubmit={handleSubmit(submit)} className="space-y-5">
           <div>
-            <label className="text-sm font-medium text-[#94A3B8]">Campaign Name</label>
+            <label className="text-sm font-medium text-slate-700">Campaign Name</label>
             <input
               {...register("name")}
               placeholder="Reddit Marketing"
-              className="mt-2 w-full rounded-md border border-[#243342] bg-[#111923] text-[#F1F5F9] p-3 outline-none transition-all focus:border-[#22D3C5]"
+              className="mt-2 w-full rounded-lg border border-slate-300 bg-white text-slate-900 p-3 outline-none transition-all focus:border-teal-500 focus:ring-1 focus:ring-teal-500 shadow-sm"
             />
             {errors.name && (
-              <p className="mt-1 text-sm text-[#FB7185]">{errors.name.message}</p>
+              <p className="mt-1 text-sm text-rose-500">{errors.name.message}</p>
             )}
           </div>
 
           <div>
-            <label className="text-sm font-medium text-[#94A3B8]">Destination URL</label>
+            <label className="text-sm font-medium text-slate-700">Destination URL</label>
             <input
               {...register("destinationUrl")}
               placeholder="https://example.com"
-              className="mt-2 w-full rounded-md border border-[#243342] bg-[#111923] text-[#F1F5F9] p-3 outline-none transition-all focus:border-[#22D3C5]"
+              className="mt-2 w-full rounded-lg border border-slate-300 bg-white text-slate-900 p-3 outline-none transition-all focus:border-teal-500 focus:ring-1 focus:ring-teal-500 shadow-sm"
             />
             {errors.destinationUrl && (
-              <p className="mt-1 text-sm text-[#FB7185]">{errors.destinationUrl.message}</p>
+              <p className="mt-1 text-sm text-rose-500">{errors.destinationUrl.message}</p>
             )}
           </div>
 
-          <div className="rounded-md border border-[#243342] bg-[#111923] p-4 flex gap-3">
-             <div className="text-[#38BDF8] mt-0.5">ℹ️</div>
-             <p className="text-sm leading-6 text-[#94A3B8]">
+          <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 flex gap-3">
+             <div className="text-sky-500 mt-0.5">ℹ️</div>
+             <p className="text-sm leading-6 text-slate-600">
               A unique tracking link will be generated automatically when this campaign is created.
             </p>
           </div>

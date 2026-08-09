@@ -26,12 +26,6 @@ export interface AIAnalyticsContext {
     percentage: number;
   }[];
 
-  countries: {
-    name: string;
-    clicks: number;
-    percentage: number;
-  }[];
-
   timeline: {
     date: string;
     clicks: number;
@@ -89,16 +83,6 @@ export const buildAIContext = (
     browsers:
       analytics.browsers.map((item) => ({
         name: item.browser,
-        clicks: item.count,
-        percentage: calculatePercentage(
-          item.count,
-          totalClicks
-        ),
-      })),
-
-    countries:
-      analytics.countries.map((item) => ({
-        name: item.country,
         clicks: item.count,
         percentage: calculatePercentage(
           item.count,

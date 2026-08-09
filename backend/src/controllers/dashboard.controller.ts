@@ -78,14 +78,7 @@ export const getDashboard = asyncHandler(
 
       });
 
-    /*
-      Activity system
-      will come later.
 
-      Return empty array
-      for now.
-    */
-    const recentActivity: any[] = [];
 
     res.status(200).json({
 
@@ -105,8 +98,6 @@ export const getDashboard = asyncHandler(
         },
 
         recentProjects,
-
-        recentActivity,
 
       },
 

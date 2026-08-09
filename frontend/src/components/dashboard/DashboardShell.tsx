@@ -19,7 +19,7 @@ const DashboardShell = ({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen overflow-x-hidden md:flex bg-[#080D14] text-[#F1F5F9]">
+    <div className="min-h-screen overflow-x-hidden md:flex bg-slate-50 text-slate-900">
       <Sidebar
         mobileOpen={mobileMenuOpen}
         onCloseMobile={() => setMobileMenuOpen(false)}

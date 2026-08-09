@@ -1,6 +1,5 @@
 import StatsGrid from "../../components/dashboard/StatsGrid";
 import RecentProjects from "../../components/dashboard/RecentProjects";
-import RecentActivity from "../../components/dashboard/RecentActivity";
 
 import Loader from "../../components/ui/Loader";
 import DashboardShell from "../../components/dashboard/DashboardShell";
@@ -78,13 +77,14 @@ const Dashboard = () => {
 
             />
 
-            <RecentActivity
-
-              activities={
-                dashboard!.recentActivity
-              }
-
-            />
+            <div className="flex flex-col justify-center items-center p-8 bg-gradient-to-br from-indigo-50 to-white dark:from-gray-800 dark:to-gray-900 rounded-lg border border-indigo-100 dark:border-gray-700 shadow-sm text-center">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">
+                Know which campaigns actually drive traffic.
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400 max-w-sm">
+                Track every campaign. Understand your traffic. Make better marketing decisions with LaunchLens.
+              </p>
+            </div>
 
           </div>
 

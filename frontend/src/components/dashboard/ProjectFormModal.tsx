@@ -75,44 +75,44 @@ const ProjectFormModal = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#080D14]/80 p-4">
-      <div className="w-full max-w-lg rounded-lg border border-[#243342] bg-[#16222E] p-6 shadow-2xl sm:p-8">
-        <h2 className="mb-6 text-2xl font-semibold tracking-tight text-[#F1F5F9]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
+      <div className="w-full max-w-lg rounded-xl border border-slate-200 bg-white p-6 shadow-2xl sm:p-8">
+        <h2 className="mb-6 text-2xl font-semibold tracking-tight text-slate-900">
           {mode === "create" ? "Create Project" : "Edit Project"}
         </h2>
 
         <form onSubmit={handleSubmit(submit)} className="space-y-5">
           <div>
-            <label className="text-sm font-medium text-[#94A3B8]">Project Name</label>
+            <label className="text-sm font-medium text-slate-700">Project Name</label>
             <input
               {...register("name")}
               placeholder="LaunchLens"
-              className="mt-2 w-full rounded-md border border-[#243342] bg-[#111923] text-[#F1F5F9] p-3 outline-none transition-all focus:border-[#22D3C5]"
+              className="mt-2 w-full rounded-lg border border-slate-300 bg-white text-slate-900 p-3 outline-none transition-all focus:border-teal-500 focus:ring-1 focus:ring-teal-500 shadow-sm"
             />
             {errors.name && (
-              <p className="mt-1 text-sm text-[#FB7185]">{errors.name.message}</p>
+              <p className="mt-1 text-sm text-rose-500">{errors.name.message}</p>
             )}
           </div>
 
           <div>
-            <label className="text-sm font-medium text-[#94A3B8]">Website</label>
+            <label className="text-sm font-medium text-slate-700">Website</label>
             <input
               {...register("website")}
               placeholder="https://launchlens.com"
-              className="mt-2 w-full rounded-md border border-[#243342] bg-[#111923] text-[#F1F5F9] p-3 outline-none transition-all focus:border-[#22D3C5]"
+              className="mt-2 w-full rounded-lg border border-slate-300 bg-white text-slate-900 p-3 outline-none transition-all focus:border-teal-500 focus:ring-1 focus:ring-teal-500 shadow-sm"
             />
             {errors.website && (
-              <p className="mt-1 text-sm text-[#FB7185]">{errors.website.message}</p>
+              <p className="mt-1 text-sm text-rose-500">{errors.website.message}</p>
             )}
           </div>
 
           <div>
-            <label className="text-sm font-medium text-[#94A3B8]">Description</label>
+            <label className="text-sm font-medium text-slate-700">Description</label>
             <textarea
               rows={4}
               {...register("description")}
               placeholder="Short description about the project..."
-              className="mt-2 w-full rounded-md border border-[#243342] bg-[#111923] text-[#F1F5F9] p-3 outline-none transition-all focus:border-[#22D3C5]"
+              className="mt-2 w-full rounded-lg border border-slate-300 bg-white text-slate-900 p-3 outline-none transition-all focus:border-teal-500 focus:ring-1 focus:ring-teal-500 shadow-sm"
             />
           </div>
 

@@ -4,14 +4,14 @@ import logo from "../../assets/logo/logo.png";
 const Navbar = () => {
   return (
     <nav className="sticky top-0 z-50 border-b-3 border-black bg-amber-50/90 backdrop-blur-md">
-      <div className="mx-auto flex h-24 max-w-7xl items-center justify-between px-6">
+      <div className="mx-auto flex h-32 max-w-7xl items-center justify-between px-6">
         
 
         <Link to="/" className="flex items-center transition-transform hover:scale-105">
           <img 
             src={logo} 
             alt="LaunchLens Logo" 
-            className="h-20 max-h-24 w-auto object-contain drop-shadow-[2px_2px_0px_rgba(0,0,0,1)]"
+            className="h-28 max-h-32 w-auto object-contain drop-shadow-[2px_2px_0px_rgba(0,0,0,1)]"
           />
         </Link>
 

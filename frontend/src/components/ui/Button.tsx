@@ -34,8 +34,8 @@ const Button = ({
 
   const variantClasses =
     variant === "primary"
-      ? "border-transparent bg-[#22D3C5] text-[#080D14] hover:bg-[#14B8A6]"
-      : "border-[#243342] bg-[#111923] text-[#F1F5F9] hover:bg-[#16222E]";
+      ? "border-transparent bg-teal-600 text-white hover:bg-teal-700 shadow-sm"
+      : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50 shadow-sm";
 
   return (
     <button

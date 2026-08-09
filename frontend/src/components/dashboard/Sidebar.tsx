@@ -63,10 +63,11 @@ const Sidebar = ({
       duration-200
       ease-in-out
       relative
+      rounded-lg
       ${
         isActive
-          ? "text-[#F1F5F9] bg-[#111923]"
-          : "text-[#94A3B8] hover:bg-[#111923] hover:text-[#F1F5F9]"
+          ? "text-teal-700 bg-teal-50 font-semibold"
+          : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
       }
     `;
 
@@ -75,7 +76,7 @@ const Sidebar = ({
       {mobileOpen && (
         <button
           aria-label="Close navigation"
-          className="fixed inset-0 z-30 bg-[#080D14]/80 md:hidden"
+          className="fixed inset-0 z-30 bg-slate-900/40 md:hidden backdrop-blur-sm"
           onClick={onCloseMobile}
           type="button"
         />
@@ -91,8 +92,8 @@ const Sidebar = ({
           w-72
           flex-col
           border-r
-          border-[#243342]
-          bg-[#080D14]
+          border-slate-200
+          bg-white
           transition-transform
           duration-200
           ease-in-out
@@ -103,24 +104,24 @@ const Sidebar = ({
           ${mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
         `}
       >
-        <div className="flex items-center justify-between border-b border-[#243342] px-5 py-5 md:px-6">
+        <div className="flex items-center justify-between border-b border-slate-100 px-5 py-5 md:px-6">
           <Link
             to="/"
             className="flex items-center transition-transform duration-200 hover:scale-[1.02]"
             onClick={onCloseMobile}
           >
-            <div className="rounded-xl bg-[#F8FAFC] px-4 py-2 shadow-sm">
+            <div className="rounded-xl px-1 py-1">
               <img
                 src={logo}
                 alt="LaunchLens Logo"
-                className="h-14 w-auto object-contain"
+                className="h-16 w-auto object-contain"
               />
             </div>
           </Link>
 
           <button
             aria-label="Close menu"
-            className="rounded-lg p-2 text-[#94A3B8] transition-all duration-200 hover:bg-[#16222E] hover:text-[#F1F5F9] md:hidden"
+            className="rounded-lg p-2 text-slate-400 transition-all duration-200 hover:bg-slate-100 hover:text-slate-600 md:hidden"
             onClick={onCloseMobile}
             type="button"
           >
@@ -128,7 +129,7 @@ const Sidebar = ({
           </button>
         </div>
 
-        <nav className="flex-1 space-y-1 px-3 py-4">
+        <nav className="flex-1 space-y-2 px-3 py-6">
           <NavLink
             to="/dashboard"
             className={navClass}
@@ -136,8 +137,8 @@ const Sidebar = ({
           >
             {({ isActive }) => (
               <>
-                {isActive && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-[#22D3C5] rounded-r-full" />}
-                <LayoutDashboard size={18} className={isActive ? "text-[#22D3C5]" : ""} />
+                {isActive && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-teal-600 rounded-r-full" />}
+                <LayoutDashboard size={18} className={isActive ? "text-teal-600" : "text-slate-400"} />
                 Dashboard
               </>
             )}
@@ -150,15 +151,15 @@ const Sidebar = ({
           >
             {({ isActive }) => (
               <>
-                {isActive && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-[#22D3C5] rounded-r-full" />}
-                <FolderKanban size={18} className={isActive ? "text-[#22D3C5]" : ""} />
+                {isActive && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-teal-600 rounded-r-full" />}
+                <FolderKanban size={18} className={isActive ? "text-teal-600" : "text-slate-400"} />
                 Projects
               </>
             )}
           </NavLink>
         </nav>
 
-        <div className="mt-auto border-t border-[#243342] p-4 flex flex-col gap-2">
+        <div className="mt-auto border-t border-slate-100 p-4 flex flex-col gap-2">
           
           <button
             onClick={handleLogout}
@@ -171,11 +172,13 @@ const Sidebar = ({
               py-2.5
               text-sm
               font-medium
-              text-[#FB7185]
+              text-rose-600
               transition-all
               duration-200
               ease-in-out
-              hover:bg-[#111923]
+              hover:bg-rose-50
+              hover:text-rose-700
+              rounded-lg
             "
             type="button"
           >
@@ -191,21 +194,22 @@ const Sidebar = ({
               onMouseLeave={() => setProfileOpen(false)}
               className="
                 flex
-                h-9
-                w-9
+                h-10
+                w-10
                 items-center
                 justify-center
                 rounded-full
-                bg-[#16222E]
+                bg-slate-100
                 border
-                border-[#243342]
+                border-slate-200
                 font-semibold
-                text-[#F1F5F9]
+                text-slate-700
                 transition-all
                 duration-200
                 ease-in-out
-                hover:border-[#38BDF8]
-                hover:bg-[#111923]
+                hover:border-slate-300
+                hover:bg-slate-200
+                shadow-sm
               "
             >
               {initials}
@@ -220,9 +224,9 @@ const Sidebar = ({
                 w-52
                 rounded-lg
                 border
-                border-[#243342]
-                bg-[#16222E]
-                p-3
+                border-slate-200
+                bg-white
+                p-4
                 shadow-xl
                 transition-all
                 duration-200
@@ -230,10 +234,10 @@ const Sidebar = ({
                 ${profileOpen ? "translate-x-0 opacity-100" : "-translate-x-2 opacity-0"}
               `}
             >
-              <p className="text-sm font-semibold text-[#F1F5F9]">
+              <p className="text-sm font-semibold text-slate-900">
                 {user?.name}
               </p>
-              <p className="mt-0.5 truncate text-xs text-[#94A3B8]">
+              <p className="mt-1 truncate text-xs text-slate-500">
                 {user?.email}
               </p>
             </div>

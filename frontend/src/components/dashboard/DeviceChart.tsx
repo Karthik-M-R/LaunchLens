@@ -17,11 +17,11 @@ interface Props {
 }
 
 const COLORS = [
-  "#22D3C5",
-  "#38BDF8",
-  "#4ADE80",
-  "#FB7185",
-  "#94A3B8"
+  "#6366f1", // Indigo
+  "#ec4899", // Pink
+  "#14b8a6", // Teal
+  "#f59e0b", // Amber
+  "#8b5cf6"  // Violet
 ];
 
 const DeviceChart = ({
@@ -39,10 +39,12 @@ const DeviceChart = ({
                 data={data}
                 dataKey="count"
                 nameKey="device"
+                innerRadius={70}
                 outerRadius={100}
-                stroke="#111923"
-                strokeWidth={2}
-                label={{ fill: "#94A3B8", fontSize: 12 }}
+                paddingAngle={5}
+                stroke="none"
+                cornerRadius={4}
+                label={{ fill: "#64748b", fontSize: 12 }}
               >
                 {data.map((_, index) => (
                   <Cell

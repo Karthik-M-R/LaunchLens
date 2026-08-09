@@ -14,16 +14,16 @@ const RecentProjects = ({
 }: RecentProjectsProps) => {
 
   return (
-    <div className="flex flex-col">
-      <h2 className="text-xs font-semibold tracking-wider text-[#94A3B8] uppercase mb-3">
+    <div className="flex flex-col rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 className="text-xs font-semibold tracking-wider text-slate-500 uppercase mb-3">
         RECENT PROJECTS
       </h2>
-      <div className="h-px bg-[#243342] w-full mb-2" />
+      <div className="h-px bg-slate-200 w-full mb-2" />
 
       {projects.length === 0 ? (
         <div className="py-4">
-          <p className="text-[#F1F5F9] font-medium mb-1">No projects yet</p>
-          <p className="text-sm text-[#94A3B8] mb-4">
+          <p className="text-slate-900 font-medium mb-1">No projects yet</p>
+          <p className="text-sm text-slate-500 mb-4">
             Create your first workspace to start tracking campaign performance.
           </p>
           <Button variant="primary">
@@ -35,9 +35,9 @@ const RecentProjects = ({
           {projects.map((project, index) => (
             <div
               key={project.id}
-              className={`py-4 ${index !== projects.length - 1 ? 'border-b border-[#243342]' : ''}`}
+              className={`py-4 ${index !== projects.length - 1 ? 'border-b border-slate-100' : ''}`}
             >
-              <p className="font-medium text-[#F1F5F9]">
+              <p className="font-medium text-slate-900">
                 {project.name}
               </p>
             </div>

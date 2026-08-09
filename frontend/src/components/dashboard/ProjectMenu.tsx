@@ -32,15 +32,16 @@ const ProjectMenu = ({
         className="
           rounded-lg
           border
-          border-[#243342]
-          bg-[#111923]
+          border-slate-200
+          bg-white
           p-1.5
-          text-[#94A3B8]
+          text-slate-500
           transition-all
           duration-200
           ease-in-out
-          hover:border-[#38BDF8]
-          hover:text-[#F1F5F9]
+          hover:border-slate-300
+          hover:text-slate-700
+          shadow-sm
         "
         type="button"
         aria-label="Open project actions"
@@ -59,9 +60,9 @@ const ProjectMenu = ({
             overflow-hidden
             rounded-lg
             border
-            border-[#243342]
-            bg-[#16222E]
-            shadow-xl
+            border-slate-200
+            bg-white
+            shadow-lg
           "
         >
           <button
@@ -69,7 +70,7 @@ const ProjectMenu = ({
               setOpen(false);
               onOpen();
             }}
-            className="block w-full px-4 py-2 text-left text-sm text-[#94A3B8] transition-colors hover:bg-[#243342] hover:text-[#F1F5F9]"
+            className="block w-full px-4 py-2 text-left text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-900"
             type="button"
           >
             Open
@@ -79,7 +80,7 @@ const ProjectMenu = ({
               setOpen(false);
               onEdit();
             }}
-            className="block w-full px-4 py-2 text-left text-sm text-[#94A3B8] transition-colors hover:bg-[#243342] hover:text-[#F1F5F9]"
+            className="block w-full px-4 py-2 text-left text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-900"
             type="button"
           >
             Edit
@@ -89,7 +90,7 @@ const ProjectMenu = ({
               setOpen(false);
               onDelete();
             }}
-            className="block w-full px-4 py-2 text-left text-sm text-[#FB7185] transition-colors hover:bg-[#243342]"
+            className="block w-full px-4 py-2 text-left text-sm font-medium text-rose-600 transition-colors hover:bg-rose-50 hover:text-rose-700"
             type="button"
           >
             Delete

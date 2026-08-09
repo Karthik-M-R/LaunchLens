@@ -84,7 +84,7 @@ const CampaignAnalytics = () => {
             data={analytics.timeline}
           />
 
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
 
             <DeviceChart
               data={analytics.devices}
@@ -94,18 +94,16 @@ const CampaignAnalytics = () => {
               title="Top Referrers"
               data={analytics.referrers}
               xKey="referrer"
+              gradientStart="#10b981"
+              gradientEnd="#059669"
             />
 
             <AnalyticsBarChart
               title="Browsers"
               data={analytics.browsers}
               xKey="browser"
-            />
-
-            <AnalyticsBarChart
-              title="Countries"
-              data={analytics.countries}
-              xKey="country"
+              gradientStart="#f59e0b"
+              gradientEnd="#d97706"
             />
 
           </div>

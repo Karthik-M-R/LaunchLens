@@ -1,4 +1,5 @@
 import ProjectMenu from "./ProjectMenu";
+import { formatDate } from "../../utils/dateUtils";
 
 interface ProjectCardProps {
   id: string;
@@ -22,18 +23,18 @@ const ProjectCard = ({
   onDelete
 }: ProjectCardProps) => {
   return (
-    <div className="flex flex-col justify-between rounded-lg border border-[#243342] bg-[#111923] p-5 transition-colors hover:border-[#38BDF8]/50">
+    <div className="flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition-all duration-200 hover:border-slate-300">
       <div>
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
-            <h2 className="text-lg font-semibold tracking-tight text-[#F1F5F9]">
+            <h2 className="text-lg font-semibold tracking-tight text-slate-900">
               {name}
             </h2>
             <a
               href={website}
               target="_blank"
               rel="noreferrer"
-              className="mt-1 block truncate text-sm text-[#22D3C5] transition-colors hover:text-[#14B8A6] hover:underline"
+              className="mt-1 block truncate text-sm font-medium text-teal-600 transition-colors hover:text-teal-700 hover:underline"
             >
               {website}
             </a>
@@ -45,13 +46,13 @@ const ProjectCard = ({
           />
         </div>
         {description && (
-          <p className="mt-3 line-clamp-3 text-sm leading-6 text-[#94A3B8]">
+          <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-500">
             {description}
           </p>
         )}
       </div>
-      <p className="mt-4 text-xs text-[#94A3B8]">
-        Created {new Date(createdAt).toLocaleDateString()}
+      <p className="mt-6 text-xs text-slate-400 font-medium">
+        Created {formatDate(createdAt)}
       </p>
     </div>
   );

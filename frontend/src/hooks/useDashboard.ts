@@ -14,11 +14,6 @@ export interface DashboardData {
     name: string;
     createdAt: string;
   }[];
-
-  recentActivity: {
-    id: string;
-    message: string;
-  }[];
 }
 
 export const useDashboard = () => {

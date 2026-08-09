@@ -12,8 +12,8 @@ const AnalyticsSection = ({
   className = "",
 }: Props) => {
   return (
-    <div className={`rounded-lg border border-[#243342] bg-[#111923] p-5 sm:p-6 ${className}`.trim()}>
-      <h2 className="mb-6 text-xs font-semibold tracking-wider text-[#94A3B8] uppercase">
+    <div className={`rounded-2xl border border-slate-100 bg-white/50 backdrop-blur-sm p-6 shadow-sm hover:shadow-lg transition-all duration-300 ${className}`.trim()}>
+      <h2 className="mb-6 text-sm font-semibold tracking-wide text-slate-700">
         {title}
       </h2>
       {children}

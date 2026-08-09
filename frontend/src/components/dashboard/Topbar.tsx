@@ -22,11 +22,11 @@ const Topbar = ({
         top-0
         z-20
         border-b
-        border-[#243342]
-        bg-[#080D14]/90
+        border-slate-200
+        bg-white/90
         px-4
         py-4
-        backdrop-blur
+        backdrop-blur-md
         sm:px-6
         lg:px-8
         flex
@@ -50,14 +50,15 @@ const Topbar = ({
                 justify-center
                 rounded-lg
                 border
-                border-[#243342]
-                bg-[#111923]
-                text-[#94A3B8]
+                border-slate-200
+                bg-white
+                text-slate-500
                 transition-all
                 duration-200
                 ease-in-out
-                hover:border-[#38BDF8]
-                hover:text-[#F1F5F9]
+                hover:border-slate-300
+                hover:text-slate-700
+                shadow-sm
                 md:hidden
               "
               aria-label="Open navigation menu"
@@ -66,11 +67,11 @@ const Topbar = ({
             </button>
           )}
           <div className="min-w-0 flex flex-col justify-center">
-            <h1 className="text-xl font-semibold tracking-tight text-[#F1F5F9] sm:text-2xl">
+            <h1 className="text-xl font-semibold tracking-tight text-slate-900 sm:text-2xl">
               {title}
             </h1>
             {subtitle && (
-              <p className="text-xs text-[#94A3B8] sm:text-sm mt-0.5">
+              <p className="text-xs text-slate-500 sm:text-sm mt-0.5">
                 {subtitle}
               </p>
             )}
