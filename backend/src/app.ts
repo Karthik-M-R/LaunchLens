@@ -19,7 +19,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://launch-lens-8n9130ue4-karthik-m-rs-projects.vercel.app",
+      "https://launch-lens-beta.vercel.app",
     ],
     credentials: true,
   })
