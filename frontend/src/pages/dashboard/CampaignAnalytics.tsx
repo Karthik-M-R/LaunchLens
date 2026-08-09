@@ -12,6 +12,8 @@ import TimelineChart from "../../components/dashboard/TimelineChart";
 import DeviceChart from "../../components/dashboard/DeviceChart";
 import AnalyticsBarChart from "../../components/dashboard/AnalyticsBarChart";
 import DashboardShell from "../../components/dashboard/DashboardShell";
+import AIInsights
+from "../../components/dashboard/AIInsights";
 
 const CampaignAnalytics = () => {
   const { id } = useParams();
@@ -72,8 +74,11 @@ const CampaignAnalytics = () => {
           <AnalyticsCards
             summary={analytics.summary}
             devices={analytics.devices}
-            countries={analytics.countries}
+            
           />
+          <AIInsights
+  campaignId={id!}
+/>
 
           <TimelineChart
             data={analytics.timeline}

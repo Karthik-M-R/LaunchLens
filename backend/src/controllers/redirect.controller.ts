@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-
+import { UAParser } from "ua-parser-js";
 import prisma from "../config/prisma";
 
 import { getVisitorId } from "../utils/getVisitorId";
@@ -31,9 +31,23 @@ export const redirectToCampaign = async (
       res
     );
 
+    const userAgentString = req.get("user-agent") ?? "";
     const device = detectDevice(
-      req.get("user-agent") ?? ""
+      userAgentString
     );
+
+    let browser = "Unknown";
+    try {
+      if (userAgentString) {
+        const parser = new UAParser(userAgentString);
+        const parsedBrowser = parser.getBrowser().name;
+        if (parsedBrowser) {
+          browser = parsedBrowser;
+        }
+      }
+    } catch (e) {
+      browser = "Unknown";
+    }
 
     await prisma.clickEvent.create({
       data: {
@@ -45,6 +59,7 @@ export const redirectToCampaign = async (
           req.ip ?? null,
 
         device,
+        browser,
 
         referrer:
           req.get("referer") ?? null,

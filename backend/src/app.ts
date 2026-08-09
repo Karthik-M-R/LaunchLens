@@ -11,7 +11,8 @@ import redirectRoutes
 from "./routes/redirect.routes";
 import analyticsRoutes
 from "./routes/analytics.routes";
-
+import aiRoutes
+from "./routes/ai.routes";
 const app = express();
 
 app.use(
@@ -52,6 +53,9 @@ app.use(
 );
 
 
-
+app.use(
+  "/api",
+  aiRoutes
+);
 app.use(errorHandler);
 export default app;

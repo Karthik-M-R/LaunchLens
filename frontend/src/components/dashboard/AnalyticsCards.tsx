@@ -8,10 +8,7 @@ interface Props {
     device: string;
     count: number;
   }[];
-  countries: {
-    country: string;
-    count: number;
-  }[];
+  
 }
 
 const AnalyticsCards = ({
@@ -41,11 +38,7 @@ const AnalyticsCards = ({
           <p className="mt-1 text-sm text-[#94A3B8]">different categories</p>
         </div>
 
-        <div className="px-4 sm:border-l sm:border-[#243342]">
-          <p className="text-xs font-semibold tracking-wider text-[#94A3B8] uppercase">Countries</p>
-          <p className="mt-2 text-3xl font-bold tracking-tight text-[#F1F5F9]">{countries.length}</p>
-          <p className="mt-1 text-sm text-[#94A3B8]">regions active</p>
-        </div>
+        
 
       </div>
     </div>
