@@ -101,13 +101,14 @@ export const login = asyncHandler(
   user.id
 );
 
+    const isProd = process.env.NODE_ENV === "production" || process.env.FRONTEND_URL?.startsWith("https://");
     res.cookie(
       "token",
       token,
       {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        secure: isProd,
+        sameSite: isProd ? "none" : "lax",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       }
     );
@@ -179,10 +180,11 @@ fetches the latest user information from the database, and returns it. */
 
 export const logout = asyncHandler(
   async (req: Request, res: Response) => {
+    const isProd = process.env.NODE_ENV === "production" || process.env.FRONTEND_URL?.startsWith("https://");
     res.clearCookie("token", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      secure: isProd,
+      sameSite: isProd ? "none" : "lax",
     });
 
     res.status(200).json({
