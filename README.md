@@ -1,7 +1,7 @@
 # 🚀 LaunchLens
 
-> **AI-powered marketing attribution and campaign analytics platform for
-> creators, founders, freelancers, agencies, and small businesses.**
+> **AI-powered marketing attribution and campaign analytics platform for indiehackers,
+> soloprenuers,entrepreneurs,creators, founders, freelancers, agencies, and small businesses.**
 
 LaunchLens helps users create campaign-specific tracking links, collect
 click events, analyze campaign traffic, and turn deterministic analytics
