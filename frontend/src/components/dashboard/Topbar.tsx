@@ -32,7 +32,7 @@ const Topbar = ({
         flex
         items-center
         justify-between
-        min-h-[64px]
+        min-h-16
       "
     >
       <div className="flex items-start justify-between gap-4 w-full">
@@ -67,11 +67,11 @@ const Topbar = ({
             </button>
           )}
           <div className="min-w-0 flex flex-col justify-center">
-            <h1 className="text-xl font-semibold tracking-tight text-slate-900 sm:text-2xl">
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
               {title}
             </h1>
             {subtitle && (
-              <p className="text-xs text-slate-500 sm:text-sm mt-0.5">
+              <p className="text-sm text-slate-500 sm:text-base mt-1 font-medium">
                 {subtitle}
               </p>
             )}

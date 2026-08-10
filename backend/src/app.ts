@@ -15,9 +15,20 @@ import aiRoutes
 from "./routes/ai.routes";
 const app = express();
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://launch-lens-beta.vercel.app",
+];
+
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
