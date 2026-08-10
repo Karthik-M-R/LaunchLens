@@ -107,28 +107,43 @@ into actionable AI-generated insights.
 
 ```text
 LaunchLens/
-├── frontend/
-│   ├── public/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── services/
-│   │   └── utils/
-│   └── package.json
-│
 ├── backend/
+│   ├── package.json
+│   ├── prisma/
+│   │   ├── migrations/
+│   │   └── schema.prisma
 │   ├── src/
+│   │   ├── ai/
+│   │   ├── app.ts
 │   │   ├── config/
 │   │   ├── controllers/
 │   │   ├── middleware/
 │   │   ├── routes/
+│   │   ├── server.ts
 │   │   ├── services/
 │   │   ├── types/
-│   │   └── server.ts
-│   ├── prisma/
-│   │   └── schema.prisma
-│   └── package.json
-│
+│   │   ├── utils/
+│   │   └── validation/
+│   └── tsconfig.json
+├── frontend/
+│   ├── index.html
+│   ├── package.json
+│   ├── public/
+│   ├── README.md
+│   ├── src/
+│   │   ├── api/
+│   │   ├── assets/
+│   │   ├── components/
+│   │   ├── context/
+│   │   ├── hooks/
+│   │   ├── pages/
+│   │   ├── routes/
+│   │   ├── types/
+│   │   ├── utils/
+│   │   └── validation/
+│   ├── tsconfig.json
+│   ├── vercel.json
+│   └── vite.config.ts
 └── README.md
 ```
 
