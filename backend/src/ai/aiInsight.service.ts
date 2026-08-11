@@ -104,7 +104,22 @@ export const generateCampaignInsights = async (
       parsedResponse
     );
 
-  // 8. Return only validated data.
+  // 8. Lightweight Grounding Safeguard
+  // If we have 0 total clicks, the AI shouldn't generate arbitrary trend/device/traffic insights.
+  // Reject contradictory evidence by defaulting to a data_quality insight.
+  if (context.totalClicks === 0) {
+    const hasValidInsights = validated.insights.every(i => i.type === "data_quality");
+    if (!hasValidInsights) {
+      validated.insights = [{
+        type: "data_quality",
+        title: "Insufficient Data",
+        description: "This campaign currently has no recorded clicks or visitors.",
+        evidence: "0 total clicks",
+      }];
+    }
+  }
+
+  // 9. Return only validated data.
 
   return validated;
 };

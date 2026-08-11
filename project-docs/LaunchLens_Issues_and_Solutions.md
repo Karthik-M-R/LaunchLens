@@ -54,3 +54,17 @@ Standard tracking implementations often fail to differentiate between users on t
 **The Solution:**
 * **UUID Implementation:** Re-architected the redirect engine to generate and store a unique UUID for each visitor.
 * **Database Schema Update:** Modified the Prisma schema to accommodate precise analytics tracking, ensuring that link clicks and unique visitors are accurately incremented without violating user privacy.
+
+---
+
+## 5. AI Campaign Insights Hallucination
+**The Problem:**
+The AI Campaign Insights feature was generating completely unrelated, hallucinated data (e.g., random campaign names like "Summer Sale 2024", fictional click counts, and fake timelines) instead of analyzing the actual campaign analytics.
+
+**The Cause:**
+A syntax error existed in the prompt builder logic (`buildUserPrompt`). The template literal variables (e.g., `\${context.campaignName}`) were accidentally escaped with backslashes. As a result, the AI provider received the literal placeholder strings instead of the actual data from the database. Lacking any real numbers but instructed to analyze the data, the LLM hallucinated generic metrics.
+
+**The Solution:**
+* **Template Syntax Fix:** Removed the escaping backslashes from the AI prompt template so that analytics data correctly interpolates into the prompt.
+* **Prompt Engineering:** Updated the system instructions to command the AI to return a specific `data_quality` insight when provided with insufficient data.
+* **Backend Grounding Safeguard:** Implemented lightweight validation in the insight service. If a campaign has zero clicks, the backend overrides any hallucinated trends or traffic insights and strictly defaults to returning an "Insufficient Data" insight.

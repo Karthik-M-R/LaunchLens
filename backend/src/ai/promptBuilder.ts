@@ -74,32 +74,32 @@ export const buildUserPrompt = (
 Analyze the following LaunchLens campaign data.
 
 CAMPAIGN:
-\${context.campaignName}
+${context.campaignName}
 
 TOTAL CLICKS:
-\${context.totalClicks}
+${context.totalClicks}
 
 UNIQUE VISITORS:
-\${context.uniqueVisitors}
+${context.uniqueVisitors}
 
 TRAFFIC SOURCES:
-\${JSON.stringify(context.trafficSources, null, 2)}
+${JSON.stringify(context.trafficSources, null, 2)}
 
 DEVICES:
-\${JSON.stringify(context.devices, null, 2)}
+${JSON.stringify(context.devices, null, 2)}
 
 BROWSERS:
-\${JSON.stringify(context.browsers, null, 2)}
+${JSON.stringify(context.browsers, null, 2)}
 
 TIMELINE:
-\${JSON.stringify(context.timeline, null, 2)}
+${JSON.stringify(context.timeline, null, 2)}
 
 Provide a concise, evidence-based analysis.
 
 Remember:
 - Do not invent information, conversions, or revenue.
 - Do not assume causes that aren't supported by the data.
-- If the available data is insufficient, say so.
+- If the available data is insufficient, explicitly return a "data_quality" insight and state that data is insufficient.
 - Keep the output short, clean, and highly actionable.
 `;
 };
