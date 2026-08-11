@@ -205,7 +205,6 @@ import { ReferrerAnalytics } from "../types/analytics";
 export const getReferrerAnalytics = async (
   campaignId: string
 ): Promise<ReferrerAnalytics[]> => {
-
   const clicks = await prisma.clickEvent.findMany({
     where: {
       campaignId,
@@ -215,27 +214,35 @@ export const getReferrerAnalytics = async (
     },
   });
 
-  const referrerMap =
-    new Map<string, number>();
+  const referrerMap = new Map<string, number>();
 
   clicks.forEach((click) => {
+    let source = "Direct";
 
-    const referrer =
-      click.referrer ?? "Direct";
+    if (click.referrer) {
+      try {
+        const url = new URL(click.referrer);
+
+        source = url.hostname
+          .replace(/^www\./, "")
+          .toLowerCase();
+      } catch {
+        source = "Unknown";
+      }
+    }
 
     referrerMap.set(
-      referrer,
-      (referrerMap.get(referrer) ?? 0) + 1
+      source,
+      (referrerMap.get(source) ?? 0) + 1
     );
-
   });
 
-  return [...referrerMap.entries()].map(
-    ([referrer, count]) => ({
+  return [...referrerMap.entries()]
+    .map(([referrer, count]) => ({
       referrer,
       count,
-    })
-  );
+    }))
+    .sort((a, b) => b.count - a.count);
 };
 
 import { TimelineAnalytics } from "../types/analytics";
