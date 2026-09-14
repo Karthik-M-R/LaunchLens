@@ -82,6 +82,7 @@ model Campaign {
   @@index([projectId])
 
   @@map("campaigns")
+  
 }
 
 model ClickEvent {
@@ -124,3 +125,11 @@ model Conversion {
 
   @@map("conversions")
 }
+
+
+// Creates a database index on the userId field to make queries that search
+// for projects belonging to a specific user faster. The index is an additional
+// lookup structure; it does not change the userId data or make it unique.
+// @@ means this is a model-level attribute because the index belongs to the
+// table/model, not to the individual field itself.
+//@@index([userId])
