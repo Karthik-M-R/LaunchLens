@@ -3,15 +3,20 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../../api/axios";
 import { useAuth } from "../../context/AuthContext";
+import { useState } from "react";
+
 
 import {
   loginSchema,
   type LoginFormData,
 } from "../../validation/auth";
 
+
+
 const LoginForm = () => {
   const { refreshUser } = useAuth();
   const navigate = useNavigate();
+  const [loginError, setLoginError] = useState("");
 
   const {
     register,
@@ -25,59 +30,21 @@ const LoginForm = () => {
     },
   });
 
-  const onSubmit = async (
-  data: LoginFormData
-) => {
+const onSubmit = async (data: LoginFormData) => {
+  setLoginError("");
+
   try {
-
-    /*
-      Send email & password to backend.
-
-      Backend:
-
-      Validate
-
-      Compare Password
-
-      Generate JWT
-
-      Store Cookie
-    */
-
     await api.post("/auth/login", data);
-
-    /*
-      Login API only creates cookie.
-
-      Now ask backend
-
-      "Who is logged in?"
-
-      GET /auth/me
-
-      Stores user inside AuthContext.
-    */
 
     await refreshUser();
 
-    /*
-      User is authenticated.
-
-      Go to Dashboard.
-    */
-
     navigate("/dashboard");
-
   } catch (error: any) {
-
-    alert(
-      error.response?.data?.message ??
-      "Login Failed"
+    setLoginError(
+      error.response?.data?.message ?? "Login failed. Please try again."
     );
-
   }
 };
-
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -141,6 +108,15 @@ const LoginForm = () => {
         )}
 
       </div>
+       {/* Login error message */}
+      {loginError && (
+        <p
+          role="alert"
+          className="rounded-xl border-2 border-red-500 bg-red-50 p-3 font-bold text-red-600"
+        >
+          {loginError}
+        </p>
+      )}
 
       {/* Forgot */}
 
