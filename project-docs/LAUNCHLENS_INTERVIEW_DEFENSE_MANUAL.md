@@ -46,6 +46,7 @@ LaunchLens/
 │       │   └── ai.routes.ts
 │       ├── middleware/
 │       │   ├── auth.middleware.ts  ← JWT verification
+│       │   ├── loginLimiter.ts     ← express-rate-limit (5 attempts / 15 mins)
 │       │   └── error.middleware.ts ← Global error handler (Zod + catch-all)
 │       ├── services/
 │       │   └── analytics.service.ts ← All analytics calculations
@@ -186,6 +187,7 @@ LaunchLens/
 | **PostgreSQL**           | Database              | Relational data store (via Supabase)          | `schema.prisma` datasource                                      |
 | **bcrypt**               | Backend auth          | Password hashing (10 salt rounds)             | `backend/src/utils/hash.ts`                                     |
 | **jsonwebtoken**         | Backend auth          | JWT creation/verification (7d expiry)         | `backend/src/utils/jwt.ts`                                      |
+| **express-rate-limit**   | Backend auth / security | Brute-force & DoS defense (5 req/15m on login)| `backend/src/middleware/loginLimiter.ts`, `auth.routes.ts`      |
 | **cookie-parser**        | Backend               | Parse cookies from requests                   | `backend/src/app.ts`                                            |
 | **cors**                 | Backend               | Cross-origin request handling                 | `backend/src/app.ts`                                            |
 | **ua-parser-js**         | Backend tracking      | Browser name parsing from User-Agent          | `backend/src/controllers/redirect.controller.ts`                |
@@ -338,8 +340,8 @@ _Use the 2-minute explanation, then walk through the tracking pipeline in detail
 │    cors() → express.json() → cookieParser()              │
 │                                                          │
 │  Route Groups:                                           │
-│    /api/auth/*        → auth.controller (signup/login/   │
-│                         me/logout)                       │
+│    /api/auth/login    → loginLimiter (5 req/15m) → login │
+│    /api/auth/*        → auth.controller (signup/me/logout│
 │    /api/dashboard     → dashboard.controller             │
 │    /api/projects/*    → project.controller               │
 │    /api/projects/:pid/campaigns → campaign.controller    │
@@ -420,6 +422,12 @@ SignupForm shows alert → navigates to /login
 LoginForm.tsx (react-hook-form + zodResolver)
     ↓ onSubmit
 POST /api/auth/login { email, password }
+    ↓
+loginLimiter middleware (`backend/src/middleware/loginLimiter.ts`)
+    ├─ If >5 attempts in 15 mins for this IP:
+    │   └─ 429 Too Many Requests { success: false, message: "Too many login attempts. Please try again in 15 minutes." }
+    │       └─ LoginForm catches error.response?.data?.message → renders red error banner in UI
+    └─ If <=5 attempts: passes through (next())
     ↓
 auth.controller.ts → login()
     ↓
@@ -624,15 +632,17 @@ Identifies users, protects their data from other users, and maintains sessions a
 
 ### Backend files
 
-- [`auth.routes.ts`](file:///c:/Users/karth/Desktop/CSE/%F0%9F%9A%80_%F0%9F%9B%A0%EF%B8%8F/LaunchLens/backend/src/routes/auth.routes.ts): POST /signup, POST /login, GET /me, POST /logout
-- [`auth.controller.ts`](file:///c:/Users/karth/Desktop/CSE/%F0%9F%9A%80_%F0%9F%9B%A0%EF%B8%8F/LaunchLens/backend/src/controllers/auth.controller.ts): signup(), login(), me(), logout()
-- [`auth.middleware.ts`](file:///c:/Users/karth/Desktop/CSE/%F0%9F%9A%80_%F0%9F%9B%A0%EF%B8%8F/LaunchLens/backend/src/middleware/auth.middleware.ts): authenticate()
-- [`hash.ts`](file:///c:/Users/karth/Desktop/CSE/%F0%9F%9A%80_%F0%9F%9B%A0%EF%B8%8F/LaunchLens/backend/src/utils/hash.ts): hashPassword(), comparePassword()
-- [`jwt.ts`](file:///c:/Users/karth/Desktop/CSE/%F0%9F%9A%80_%F0%9F%9B%A0%EF%B8%8F/LaunchLens/backend/src/utils/jwt.ts): generateToken(), verifyToken()
+- [`auth.routes.ts`](file:///c:/Users/karth/Desktop/CSE/Personal_Projects/LaunchLens/backend/src/routes/auth.routes.ts): POST /signup, POST /login (with `loginLimiter`), GET /me, POST /logout
+- [`auth.controller.ts`](file:///c:/Users/karth/Desktop/CSE/Personal_Projects/LaunchLens/backend/src/controllers/auth.controller.ts): signup(), login(), me(), logout()
+- [`auth.middleware.ts`](file:///c:/Users/karth/Desktop/CSE/Personal_Projects/LaunchLens/backend/src/middleware/auth.middleware.ts): authenticate()
+- [`loginLimiter.ts`](file:///c:/Users/karth/Desktop/CSE/Personal_Projects/LaunchLens/backend/src/middleware/loginLimiter.ts): express-rate-limit middleware (5 attempts per 15 minutes per IP)
+- [`hash.ts`](file:///c:/Users/karth/Desktop/CSE/Personal_Projects/LaunchLens/backend/src/utils/hash.ts): hashPassword(), comparePassword()
+- [`jwt.ts`](file:///c:/Users/karth/Desktop/CSE/Personal_Projects/LaunchLens/backend/src/utils/jwt.ts): generateToken(), verifyToken()
 
 ### Security mechanisms
 
 - **Password hashing:** bcrypt with 10 salt rounds
+- **Rate limiting:** `loginLimiter` using `express-rate-limit` (5 requests per 15-minute window per IP) to mitigate brute-force credential stuffing and bcrypt CPU exhaustion
 - **JWT payload:** `{ userId }` with 7-day expiry
 - **Cookie settings:** httpOnly, secure (prod), sameSite: none (prod) / lax (dev), maxAge: 7 days
 - **Session restoration:** `GET /me` on app mount uses cookie to restore user state
@@ -640,6 +650,7 @@ Identifies users, protects their data from other users, and maintains sessions a
 ### What happens if something fails?
 
 - Invalid credentials → 401 "Invalid email or password"
+- Rate limit exceeded (>5 attempts within 15 min) → 429 Too Many Requests: `{"success": false, "message": "Too many login attempts. Please try again in 15 minutes."}`
 - Duplicate email → 409 "Email already exists"
 - Missing/invalid token → 401 "Authentication required" or "Invalid or expired token"
 - User not found on /me → 404 "User not found"
@@ -649,9 +660,81 @@ Identifies users, protects their data from other users, and maintains sessions a
 - No refresh token rotation — the same JWT is valid for 7 days
 - No password reset / "Forgot Password" flow (button exists in UI but is non-functional)
 - No email verification
-- No rate limiting on login attempts
+- Rate limiting is currently scoped to `/api/auth/login` using in-memory store; public redirects (`/r/:slug`) and AI generation (`/api/campaigns/:id/insights`) do not yet have rate limits.
+- In-memory rate limiting resets on server restart and does not sync across horizontally scaled pods (production requires Redis-backed store).
 
 ---
+
+## 5.1.1 Deep Dive: Rate Limiting & Brute-Force Defense Architecture
+
+### Why Rate Limiting was Added to Login
+
+Login endpoints are the single highest-value attack surface in web applications. Without rate limiting, two severe vulnerabilities exist:
+
+1. **Brute-Force & Credential Stuffing:** Automated bots can test thousands of password dictionaries or leaked credential dumps against user accounts.
+2. **Bcrypt Denial-of-Service (CPU Starvation):** `bcrypt.compare` with 10 salt rounds is deliberately computationally expensive by design (it takes ~80–120ms of synchronous CPU time per attempt). If an attacker fires 200 requests/second at `/api/auth/login`, Node.js libuv worker threads and the CPU get completely saturated, causing the entire server to freeze and reject legitimate requests.
+
+By intercepting requests with `loginLimiter` at the Express routing layer, unauthorized bursts are blocked in **under 1 millisecond** before hitting PostgreSQL or triggering a single `bcrypt.compare` call.
+
+### Code Implementation (`backend/src/middleware/loginLimiter.ts`)
+
+```typescript
+import rateLimit from "express-rate-limit";
+
+export const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15-minute sliding window
+  limit: 5,                  // Maximum 5 requests per IP address
+  standardHeaders: "draft-8", // Returns standard RateLimit-* headers (RFC draft-8)
+  legacyHeaders: false,      // Disables deprecated X-RateLimit-* headers
+  message: {
+    success: false,
+    message: "Too many login attempts. Please try again in 15 minutes.",
+  },
+});
+```
+
+### Route Wiring (`backend/src/routes/auth.routes.ts`)
+
+```typescript
+router.post("/login", loginLimiter, login);
+```
+- `loginLimiter` acts as targeted middleware executed **strictly before** `login` controller logic.
+- If request count $\le 5$ within the 15-minute window: calls `next()` to proceed to validation and database query.
+- If request count $> 5$: immediately terminates the HTTP cycle with status `429 Too Many Requests` and returns the custom JSON payload.
+
+### Standard HTTP Headers (`draft-8`)
+
+When requests hit `/api/auth/login`, Express returns modern IETF RFC draft-8 headers:
+- `RateLimit-Limit: 5` — total allowed requests in window
+- `RateLimit-Remaining: 4` — remaining attempts available before block
+- `RateLimit-Reset: 840` — seconds remaining until window resets
+
+### Frontend UI Integration (`frontend/src/components/auth/LoginForm.tsx`)
+
+In `LoginForm.tsx`:
+```tsx
+const onSubmit = async (data: LoginFormData) => {
+  setLoginError("");
+  try {
+    await api.post("/auth/login", data);
+    await refreshUser();
+    navigate("/dashboard");
+  } catch (error: any) {
+    setLoginError(
+      error.response?.data?.message ?? "Login failed. Please try again."
+    );
+  }
+};
+```
+When HTTP 429 occurs, Axios rejects the promise. The catch block extracts `error.response?.data?.message` (`"Too many login attempts. Please try again in 15 minutes."`) and updates `loginError` state, rendering a clear, red security warning to the user.
+
+### Senior Interview Trade-offs & Production Considerations
+
+| Architecture Question | LaunchLens Implementation | Senior Interview Explanation / Production Upgrade |
+| :--- | :--- | :--- |
+| **Storage Backend** | `MemoryStore` (default in-memory Map) | Works out-of-the-box on a single Render instance. In a horizontally scaled cluster (multiple containers behind a load balancer), memory is isolated per container, allowing attackers to cycle requests across containers. Production fix: use `rate-limit-redis` with a shared Redis instance. |
+| **Identifier: IP vs. Email** | By client IP address (`req.ip`) | Rate limiting by IP prevents **Account Lockout DoS** (if rate limited by email, an attacker could deliberately lock out legitimate users by submitting 5 wrong attempts with their email). A production system often uses a hybrid approach: IP rate limiting + CAPTCHA / progressive exponential backoff per account. |
+| **Reverse Proxy Header** | Reads `req.ip` | On Render/Vercel, requests pass through reverse proxies. Express must have `app.set('trust proxy', 1)` configured so `req.ip` reads `X-Forwarded-For` rather than the proxy's internal IP address. |
 
 ## 5.2 Project Management
 
@@ -1022,6 +1105,7 @@ _(See Section 5.5 for implementation details)_
 
 ```
 POST /api/auth/login
+    → loginLimiter middleware (checks IP: max 5 req / 15m window)
     → Zod validates { email, password }
     → prisma.user.findUnique({ email })
     → bcrypt.compare(input, stored)
@@ -1050,19 +1134,19 @@ A: An HTTP-only cookie cannot be read by JavaScript — `document.cookie` doesn'
 A: No. That's the entire point. Only the browser's HTTP engine includes the cookie in requests automatically.
 
 **Q: What security protections currently exist?**
-A: bcrypt password hashing, JWT in HTTP-only cookies, CORS with explicit origin allowlist, resource ownership checks, Zod input validation, environment-based secrets.
+A: bcrypt password hashing, JWT in HTTP-only cookies, Rate limiting on login (`loginLimiter` — 5 attempts / 15-min window per IP), CORS with explicit origin allowlist, resource ownership checks, Zod input validation, environment-based secrets.
 
 **Q: What protections are MISSING?**
-A: Rate limiting (login brute force), CSRF protection (no CSRF tokens), Helmet/security headers, refresh token rotation, email verification, password complexity requirements beyond min length, session invalidation on password change.
+A: Distributed/Global rate limiting (login has in-memory rate limiting, but costly AI generation and public redirect endpoints are not yet rate-limited), CSRF protection (no CSRF tokens), Helmet/security headers, refresh token rotation, email verification, password complexity requirements beyond min length, session invalidation on password change.
 
 ---
 
 # 11. API ARCHITECTURE
 
-| Method | Endpoint                             | Purpose                | Auth? | Controller                               | Validation             |
+| Method | Endpoint                             | Purpose                | Auth? | Controller                               | Validation / Middleware |
 | ------ | ------------------------------------ | ---------------------- | ----- | ---------------------------------------- | ---------------------- |
 | POST   | `/api/auth/signup`                   | User registration      | No    | `auth.controller.signup`                 | `signupSchema`         |
-| POST   | `/api/auth/login`                    | User login             | No    | `auth.controller.login`                  | `loginSchema`          |
+| POST   | `/api/auth/login`                    | User login             | No    | `auth.controller.login`                  | `loginLimiter`, `loginSchema` |
 | GET    | `/api/auth/me`                       | Get current user       | Yes   | `auth.controller.me`                     | —                      |
 | POST   | `/api/auth/logout`                   | Clear auth cookie      | Yes   | `auth.controller.logout`                 | —                      |
 | GET    | `/api/dashboard`                     | Dashboard stats        | Yes   | `dashboard.controller.getDashboard`      | —                      |
@@ -1177,12 +1261,14 @@ This is intentional: the router validates to decide whether to fallback; the ser
 | Ownership checks         | Every controller verifies userId                | Unauthorized data access            |
 | Parameterized queries    | Prisma ORM (no raw SQL)                         | SQL injection                       |
 | Environment variables    | `.env` for secrets                              | Hardcoded secrets in code           |
+| Rate limiting (login)    | 5 req / 15m window per IP (`loginLimiter.ts`)   | Brute-force & bcrypt CPU DoS        |
 
 ### Potential Security Weaknesses
 
 | Weakness                     | Risk                                                                      | Improvement                                              |
 | ---------------------------- | ------------------------------------------------------------------------- | -------------------------------------------------------- |
-| No rate limiting             | Brute force login, API abuse                                              | Add express-rate-limit                                   |
+| Unprotected AI & tracking routes | Costly AI token drain, tracking link flooding                            | Add rate limiting to /api/campaigns/:id/insights & /r/:slug |
+| In-memory rate limiter store | Counters reset on restart; bypassable in multi-instance horizontal cluster| Back express-rate-limit with `rate-limit-redis`           |
 | No Helmet                    | Missing security headers (X-Frame-Options, CSP, etc.)                     | Add helmet middleware                                    |
 | No CSRF tokens               | Cross-site request forgery (SameSite: none weakens protection)            | Implement CSRF tokens                                    |
 | No refresh token rotation    | Compromised JWT valid for 7 days                                          | Short-lived access + refresh token                       |
@@ -1448,8 +1534,16 @@ This means in production, the frontend calls `/api/*` as a relative path, and Ve
 
 ## LEVEL 6 — Senior/Production Questions
 
-**Q21: How would you add rate limiting?** _(HOW I WOULD IMPROVE IT)_
-**A:** "I'd add `express-rate-limit` middleware. For the login endpoint, maybe 5 attempts per minute per IP. For the redirect endpoint, higher limits — maybe 100/minute per IP. For AI insights, perhaps 10 requests per hour per user since those are expensive API calls. I'd use Redis as the backing store for rate limit counters in a distributed setup."
+**Q21: How does rate limiting work in LaunchLens, and how would you scale it?**
+**A:** "I implemented targeted rate limiting on the most critical attack surface: `POST /api/auth/login` using `express-rate-limit` via dedicated middleware (`loginLimiter.ts`). It enforces a strict policy of **5 requests per 15-minute window per IP**. If a client exceeds this, the middleware immediately rejects the request with HTTP 429 and a JSON message: `'Too many login attempts. Please try again in 15 minutes.'` before hitting PostgreSQL or triggering `bcrypt.compare` (which prevents bcrypt CPU starvation). It also emits modern IETF RFC draft-8 headers (`RateLimit-Limit`, `RateLimit-Remaining`, `RateLimit-Reset`).
+
+To scale this to production:
+1. **Distributed Store:** Currently it uses `MemoryStore`. In a multi-container cluster behind a load balancer, I would switch to `rate-limit-redis` backed by an Upstash or Redis cluster so rate counts are synchronized globally.
+2. **Reverse Proxy Configuration:** Enable `app.set('trust proxy', 1)` in Express so `req.ip` accurately resolves the true client IP from the `X-Forwarded-For` header instead of the Render/Vercel proxy IP.
+3. **Tiered Route Limits:** Apply different thresholds to other routes — e.g., a burst limit of 100 req/min on public tracking redirects (`/r/:slug`), and a strict quota of 10 requests/hour per user on AI insight generation (`/api/campaigns/:id/insights`) to protect against LLM API cost exhaustion."
+
+**Q21b: Why did you rate limit by IP rather than by email address on login?**
+**A:** "Rate limiting by email introduces an **Account Lockout Denial-of-Service** vulnerability. If an attacker knows a victim's email, they could intentionally trigger 5 bad login attempts from any machine and lock the legitimate user out of their account repeatedly. Rate limiting by client IP throttles only the attacker's network, keeping the legitimate account accessible to the real user. In a mature enterprise tier, I would use a hybrid defense: IP-based throttling combined with progressive delays (exponential backoff) and CAPTCHAs."
 
 **Q22: How would you handle database writes at scale?** _(HOW I WOULD IMPROVE IT)_
 **A:** "Instead of synchronous writes in the redirect handler, I'd publish click events to a Redis queue or Kafka topic, immediately redirect the user, and have a background worker process the queue and batch-insert into PostgreSQL. This decouples the tracking latency from the database write latency."
@@ -1482,7 +1576,7 @@ This means in production, the frontend calls `/api/*` as a relative path, and Ve
 
 **Interviewer:** "What security concerns do you see in your own project?"
 
-**Excellent answer:** "Several. First, I don't have rate limiting, so someone could brute-force the login endpoint. Second, my SameSite cookie is set to 'none' in production for cross-origin support, which weakens CSRF protection — I don't have CSRF tokens to compensate. Third, I don't use Helmet for security headers like Content-Security-Policy or X-Frame-Options. Fourth, the JWT has a 7-day lifetime with no refresh rotation, so a compromised token is valid for a week. Fifth, there's no bot detection in the tracking pipeline, so automated traffic inflates analytics. I've listed all of these as known improvements. The current security posture — bcrypt hashing, HTTP-only cookies, CORS allowlisting, ownership checks, Zod validation — is reasonable for an MVP, but production would need these additional layers."
+**Excellent answer:** "Several. First, while I have rate limiting on `/api/auth/login` (5 requests per 15 minutes per IP via `express-rate-limit` to prevent brute force and bcrypt CPU starvation), it uses an in-memory store that doesn't sync across horizontally scaled pods, and I haven't yet extended rate limits to the AI generation or redirect endpoints. Second, my SameSite cookie is set to 'none' in production for cross-origin support, which weakens CSRF protection — I don't have CSRF tokens to compensate. Third, I don't use Helmet for security headers like Content-Security-Policy or X-Frame-Options. Fourth, the JWT has a 7-day lifetime with no refresh rotation, so a compromised token is valid for a week. Fifth, there's no bot detection in the tracking pipeline, so automated traffic inflates analytics. The current security posture — rate-limited authentication, bcrypt hashing, HTTP-only cookies, CORS allowlisting, ownership checks, Zod validation — is solid for an MVP, but production would need distributed Redis-backed rate limiting and CSRF tokens."
 
 ---
 
@@ -1556,7 +1650,7 @@ Based on the git history, **Karthik M R** (the repository owner) appears to be t
 ### Easy Improvements
 
 1. **Add Helmet middleware** — one line: `app.use(helmet())`
-2. **Add rate limiting** — `express-rate-limit` on login and API endpoints
+2. **Extend rate limiting to AI & tracking routes** — Login is protected via `loginLimiter.ts` (5 req/15m); extend `express-rate-limit` to AI insight generation and public redirects, backed by Redis for multi-instance deployments
 3. **Fix password validation mismatch** — backend requires 8 chars, frontend only 6
 4. **Remove unused TanStack Query dependency** — installed but unused
 5. **Implement the "Forgot Password" flow** — button exists but is non-functional
@@ -1633,7 +1727,7 @@ View Analytics (charts) → Generate AI Insights → Summary + Insights + Recomm
 
 ## G. Authentication flow
 
-`Login → bcrypt compare → JWT sign → HTTP-only cookie → authenticate middleware → req.user.userId`
+`Login → loginLimiter (5 req/15m) → bcrypt compare → JWT sign → HTTP-only cookie → authenticate middleware → req.user.userId`
 
 ## H. Tracking flow
 
@@ -1696,7 +1790,7 @@ View Analytics (charts) → Generate AI Insights → Summary + Insights + Recomm
 12. Slug — URL-friendly string derived from a name
 13. XSS — cross-site scripting (inject malicious JavaScript)
 14. CSRF — cross-site request forgery (trick browser into making requests)
-15. Rate limiting — restricting request frequency per client
+15. Rate limiting — restricting request frequency per client (implemented on login: 5 req/15m via express-rate-limit)
 16. Provider fallback — trying backup services when primary fails
 17. Deterministic — produces same result given same inputs (not probabilistic)
 18. Grounding — constraining AI output to factual, provided data
@@ -1709,7 +1803,7 @@ View Analytics (charts) → Generate AI Insights → Summary + Insights + Recomm
 2. AI hallucination → Template fix + grounding rules → Function calling
 3. Analytics performance → In-memory grouping → Database GROUP BY + caching
 4. Visitor identity → Cookie UUID → Multi-signal fingerprinting
-5. No rate limiting → None → express-rate-limit + Redis
+5. Rate limiting → Login rate limited (5 req/15m) → Distributed Redis store + rate limiting AI & tracking routes
 6. No bot detection → None → User-Agent filtering + heuristics
 7. Synchronous click storage → Blocking redirect → Message queue
 8. No security headers → None → Helmet middleware
@@ -1754,7 +1848,8 @@ View Analytics (charts) → Generate AI Insights → Summary + Insights + Recomm
 | Supabase PostgreSQL                       | ✅ VERIFIED           | Supabase connection string in `.env`                                                                                    |
 | Conversion tracking                       | ❌ NOT IMPLEMENTED    | Schema model exists; no controller/service uses it                                                                      |
 | Campaign UTM fields (source, medium, tag) | ❌ NOT IMPLEMENTED    | Schema fields exist; never populated by any controller                                                                  |
-| Rate limiting                             | ❌ NOT IMPLEMENTED    | Not present in codebase                                                                                                 |
+| Rate limiting (login endpoint)            | ✅ VERIFIED           | `backend/src/middleware/loginLimiter.ts` — 5 req/15m window via `express-rate-limit`, `standardHeaders: 'draft-8'`      |
+| Distributed / Global rate limiting (AI/r) | ❌ NOT IMPLEMENTED    | Public redirects and AI routes not yet rate-limited; in-memory store rather than Redis-backed                            |
 | Helmet / security headers                 | ❌ NOT IMPLEMENTED    | Not present in codebase                                                                                                 |
 | CSRF protection                           | ❌ NOT IMPLEMENTED    | No CSRF tokens                                                                                                          |
 | Email verification                        | ❌ NOT IMPLEMENTED    | Not present in codebase                                                                                                 |
