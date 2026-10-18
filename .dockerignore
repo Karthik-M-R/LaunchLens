@@ -1,0 +1,32 @@
+# Dependencies
+node_modules
+**/node_modules
+
+# Environment variables and secrets
+.env
+.env.*
+**/.env
+**/.env.*
+
+# Preserve example environment templates
+!.env.example
+!**/.env.example
+
+# Git
+.git
+.gitignore
+
+# Build output
+dist
+**/dist
+coverage
+**/coverage
+
+# Local development files
+.vscode
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
