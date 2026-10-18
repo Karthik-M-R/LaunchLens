@@ -26,6 +26,7 @@ into actionable AI-generated insights.
 - 🔎 Referrer/source analytics
 - 🤖 AI-powered campaign summaries, insights, and recommendations
 - 🔄 Multi-provider AI fallback
+- 🐳 Containerized multi-service development with Docker and Docker Compose
 - ☁️ Production deployment with Vercel, Render, and Supabase
   PostgreSQL
 
@@ -97,17 +98,22 @@ into actionable AI-generated insights.
 - Mistral
 - Provider abstraction and fallback
 
-### Deployment
+### Containerization & Deployment
 
-- Vercel --- frontend
-- Render --- backend
-- Supabase --- PostgreSQL
+- Docker & Docker Compose --- multi-container local development
+- Vercel --- frontend production deployment
+- Render --- backend production deployment
+- Supabase --- managed PostgreSQL
 
 ## 📁 Project Structure
 
 ```text
 LaunchLens/
+├── compose.yaml                        # Multi-container Compose configuration
+├── .dockerignore                       # Root Docker build ignore rules
 ├── backend/
+│   ├── Dockerfile                      # Backend Node.js 22 container definition
+│   ├── .dockerignore                   # Backend Docker build ignore rules
 │   ├── package.json
 │   ├── prisma/
 │   │   ├── migrations/
@@ -126,6 +132,8 @@ LaunchLens/
 │   │   └── validation/
 │   └── tsconfig.json
 ├── frontend/
+│   ├── Dockerfile                      # Frontend Vite development container
+│   ├── .dockerignore                   # Frontend Docker build ignore rules
 │   ├── index.html
 │   ├── package.json
 │   ├── public/
@@ -375,22 +383,70 @@ Express
 
 ## ⚙️ Local Development
 
-### Prerequisites
+You can run LaunchLens locally using either **Docker Compose** (recommended for zero-dependency consistency) or standard **manual setup** with Node.js and npm.
 
-- Node.js
+### Option A: Docker Compose (Recommended)
+
+Docker Compose builds and starts both frontend and backend containers in a single command, ensuring reproducible Node.js 22 runtime environments.
+
+#### 1. Prerequisites
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running
+- External PostgreSQL database (e.g. Supabase)
+
+#### 2. Configure Backend Secrets
+Create `backend/.env` with your database and API credentials:
+
+```env
+DATABASE_URL=your_supabase_postgresql_url
+DIRECT_URL=your_supabase_direct_url
+JWT_SECRET=your_jwt_secret_key
+PORT=5000
+APP_URL=http://localhost:5000
+FRONTEND_URL=http://localhost:5173
+GEMINI_API_KEY=your_gemini_key
+GROQ_API_KEY=your_groq_key
+MISTRAL_API_KEY=your_mistral_key
+```
+
+#### 3. Build & Run
+Run from the root directory:
+
+```bash
+# Build images and start containers in the background
+docker compose up --build -d
+
+# Check running status
+docker compose ps
+
+# Follow logs in real-time
+docker compose logs -f
+```
+
+- **Frontend:** Open `http://localhost:5173` in your browser
+- **Backend API:** Available at `http://localhost:5000`
+
+#### 4. Stop Services
+```bash
+docker compose down
+```
+
+---
+
+### Option B: Manual Local Setup (Node.js & npm)
+
+#### Prerequisites
+- Node.js (v20+ or v22 recommended)
 - npm
 - PostgreSQL/Supabase database
 - Required AI provider API key(s)
 
-### Clone
-
+#### Clone
 ```bash
 git clone https://github.com/Karthik-M-R/LaunchLens.git
 cd LaunchLens
 ```
 
-### Backend
-
+#### Backend Setup
 ```bash
 cd backend
 npm install
@@ -412,8 +468,7 @@ GROQ_API_KEY=your_key
 MISTRAL_API_KEY=your_key
 ```
 
-### Frontend
-
+#### Frontend Setup
 ```bash
 cd frontend
 npm install
@@ -426,8 +481,70 @@ Create `frontend/.env`:
 VITE_API_URL=http://localhost:5000
 ```
 
-> Never commit real API keys, JWT secrets, database credentials, or
-> `.env` files.
+> Never commit real API keys, JWT secrets, database credentials, or `.env` files.
+
+---
+
+## 🐳 Docker Architecture & Deep Dive
+
+LaunchLens containerizes the application tier using Docker and Docker Compose for consistent development across platforms:
+
+```text
+Host Browser
+     │
+     ├─► http://localhost:5173 ──► Frontend Container (React + Vite, host 0.0.0.0)
+     │                                  │
+     │                                  │ Browser API requests (Axios)
+     │                                  ▼
+     └─► http://localhost:5000 ◄── Backend Container (Express + Prisma, tsx watch)
+                                        │
+                                        │ DATABASE_URL / DIRECT_URL
+                                        ▼
+                                 Supabase PostgreSQL (Cloud Database)
+```
+
+### Container Services
+
+| Service | Dockerfile | Base Image | Host Port | Container Port | Purpose |
+|---------|------------|------------|-----------|----------------|---------|
+| `backend` | `backend/Dockerfile` | `node:22` | `5000` | `5000` | Express REST API, Prisma ORM, AI attribution service |
+| `frontend` | `frontend/Dockerfile` | `node:22` | `5173` | `5173` | Vite dev server with `--host 0.0.0.0` for host browser access |
+
+*Note: PostgreSQL remains hosted on Supabase (cloud DB) to match production parity and avoid local data loss.*
+
+### Key Docker Implementation Details
+
+1. **Layer Caching:** Both Dockerfiles copy `package*.json` and run `npm ci` before copying source code. When source code changes, Docker reuses cached dependency layers for fast rebuilds.
+2. **Prisma Generation in Image:** The backend Dockerfile executes `RUN npx prisma generate` after copying source code so the Prisma client engine is generated for the Linux container environment.
+3. **Vite Host Binding:** Vite runs with `--host 0.0.0.0` in the frontend container so the host machine can access port 5173 through Docker's bridge network.
+4. **Build Context Isolation:** Root `.dockerignore`, `backend/.dockerignore`, and `frontend/.dockerignore` prevent host `node_modules`, build artifacts (`dist`), `.git`, and `.env` secrets from leaking into container images.
+5. **Browser-to-Backend Resolution:** The frontend client runs in the host browser, which calls `http://localhost:5000` mapped from the backend container.
+
+### Useful Docker Commands
+
+```bash
+# Validate Compose configuration syntax
+docker compose config --quiet
+
+# Rebuild and restart only the backend service
+docker compose up -d --build backend
+
+# Rebuild and restart only the frontend service
+docker compose up -d --build frontend
+
+# View logs for a specific service
+docker compose logs -f backend
+docker compose logs -f frontend
+
+# View recent 50 log lines
+docker compose logs --tail 50
+
+# Execute a shell command inside the backend container
+docker compose exec backend npx prisma studio
+
+# Stop containers and remove Compose networks
+docker compose down
+```
 
 ## 🚀 Production Deployment
 
@@ -481,6 +598,7 @@ Implemented security practices include:
 - bcrypt password hashing
 - JWT authentication
 - HTTP-only authentication cookies
+- Rate limiting on sensitive endpoints (e.g. login brute-force prevention with `express-rate-limit`)
 - CORS configuration
 - environment-based secrets
 - user/resource ownership checks
@@ -490,7 +608,7 @@ Implemented security practices include:
 
 Potential future improvements:
 
-- Rate limiting
+- Distributed Redis rate limiting across all API endpoints
 - Bot detection
 - Advanced abuse prevention
 - Centralized monitoring/logging
@@ -536,6 +654,8 @@ LaunchLens provided practical experience with:
 - Authentication and authorization
 - PostgreSQL relational modeling
 - Prisma ORM
+- Docker & Docker Compose containerization
+- Multi-container development workflow & port forwarding
 - Tracking and redirect pipelines
 - HTTP User-Agent parsing
 - Analytics aggregation
